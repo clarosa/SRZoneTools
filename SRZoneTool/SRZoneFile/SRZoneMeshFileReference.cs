@@ -15,9 +15,8 @@ using System.Xml;
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
     /// <summary>
-    /// Object Data Item.
-    /// One or more of these data blocks are contained within an SRZoneSectionDataObjects block.
-    /// It contains a header followed by a SRPropertyData block.
+    /// Mesh File Reference.
+    /// Zero or more of these data blocks are contained within the SRWorldZoneHeader.
     /// </summary>
     class SRZoneMeshFileReference : SRDataBlockMultiBase
     {

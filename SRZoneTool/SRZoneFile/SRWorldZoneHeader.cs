@@ -15,9 +15,8 @@ using System.Xml;
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
     /// <summary>
-    /// Object Data Section.
-    /// This data block appears within the CPU Data of a Section block of type 0x2234.
-    /// It contains a header followed by a list of Object data items.
+    /// World Zone Header.
+    /// This data block appears within the Zone Header file.
     /// </summary>
     class SRWorldZoneHeader : SRDataBlockSingleBase
     {
