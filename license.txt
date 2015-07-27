@@ -1,0 +1,21 @@
+SRZoneTools - Saints Row Zone File Tools
+Copyright (c) 2015 by Christopher LaRosa
+All rights reserved.
+
+You may redistribute the source code or compiled binaries as long as you meet
+the following conditions
+
+1. You must give credit to the original creator of the software.
+
+2. You must include this license file without any changes.
+
+3. You must provide a link to main project page
+   https://www.saintsrowmods.com/forum/threads/saints-row-3-4-gooh-zone-file-tools.12631/
+   or
+   https://github.com/clarosa/SRZoneTools
+
+4. If you alter the software in any way you must clearly say that it has been
+   modified. Do not claim that your modified version is the original software.
+
+5. If you make changes to the source code and then release new binaries you
+   must also release your changes to the source code.
