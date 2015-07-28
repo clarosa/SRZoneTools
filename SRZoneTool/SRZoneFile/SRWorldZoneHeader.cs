@@ -50,23 +50,31 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         string signature;
         UInt32 version;
+        UInt32 fileReferencesPtr;
         SRTransform fileReferenceOffset;
         Byte zoneType;
         List<SRZoneMeshFileReference> references;
 
+        // LOCAL VARIABLES
+
+        private SRVFileHeader vFileHeader;
+
         // CONSTRUCTORS
 
-        public SRWorldZoneHeader()
+        public SRWorldZoneHeader(SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
         }
 
-        public SRWorldZoneHeader(SRBinaryReader binaryReader)
+        public SRWorldZoneHeader(SRBinaryReader binaryReader, SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
             Read(binaryReader);
         }
 
-        public SRWorldZoneHeader(XmlNode parentNode)
+        public SRWorldZoneHeader(XmlNode parentNode, SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
             ReadXml(parentNode);
         }
 
@@ -85,11 +93,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             signature = new string(binaryReader.ReadChars(4));
             Console.WriteLine("  World Zone Signature:   " + signature);
             if (signature != "SR3Z")
-                throw new SRZoneFileException("Incorrect signature.", binaryReader.BaseStream.Position - 4);
+                throw new SRZoneFileException("Incorrect world zone signature.", binaryReader.BaseStream.Position - 4);
             version = binaryReader.ReadUInt32();
             Console.WriteLine("  World Zone Version:     {0}", version);
-            if (version != 29)
-                throw new SRZoneFileException("Incorrect version.");
+            if (version != 29 && version != 32)  // version 29 = SR3, 32 = SR4
+                throw new SRZoneFileException("Incorrect world zone version.");
             int v_file_header_ptr = binaryReader.ReadInt32();
             Console.WriteLine("  V-File Header Pointer:  0x{0:X8}", v_file_header_ptr);
             float x = binaryReader.ReadSingle();
@@ -97,8 +105,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             float z = binaryReader.ReadSingle();
             Console.WriteLine("  File Reference Offset:  {0}, {1}, {2}", x, y, z);
             fileReferenceOffset = new SRTransform(x, y, z);
-            int wz_file_reference = binaryReader.ReadInt32();
-            Console.WriteLine("  WZ File Reference Ptr:  0x{0:X8}", wz_file_reference);
+            fileReferencesPtr = binaryReader.ReadUInt32();
+            Console.WriteLine("  WZ File Reference Ptr:  0x{0:X8}", fileReferencesPtr);
             int num_file_references = binaryReader.ReadInt16();
             Console.WriteLine("  Number of File Refs:    {0}", num_file_references);
             zoneType = binaryReader.ReadByte();
@@ -125,7 +133,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             Console.WriteLine("  MESH FILE REFERENCES:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
             references = new List<SRZoneMeshFileReference>(num_file_references);
             for (int i = 0; i < num_file_references; i++)
-                references.Add(new SRZoneMeshFileReference(binaryReader, i));
+                references.Add(new SRZoneMeshFileReference(binaryReader, i, vFileHeader));
         }
 
         /// <summary>
@@ -142,7 +150,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             binaryWriter.Write((Single)fileReferenceOffset.x);
             binaryWriter.Write((Single)fileReferenceOffset.y);
             binaryWriter.Write((Single)fileReferenceOffset.z);
-            binaryWriter.Write((UInt32)0);                      // WZ File Reference Ptr
+            binaryWriter.Write(fileReferencesPtr);
             binaryWriter.Write((UInt16)references.Count);
             binaryWriter.Write((Byte)zoneType);
             binaryWriter.Write((Byte)0);                        // Unused
@@ -172,11 +180,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             fileReferenceOffset.x = offsetReader.ReadSingle("x");
             fileReferenceOffset.y = offsetReader.ReadSingle("y");
             fileReferenceOffset.z = offsetReader.ReadSingle("z");
+            fileReferencesPtr = reader.ReadUInt32("file_references_ptr");
             zoneType = (Byte)reader.ReadUInt16("zone_type");
             XmlNodeList referenceNodes = reader.Node.SelectNodes("./mesh_file_references/" + SRZoneMeshFileReference.XmlTagName);
             references = new List<SRZoneMeshFileReference>(referenceNodes.Count);
             for (int i = 0; i < referenceNodes.Count; i++)
-                references.Add(new SRZoneMeshFileReference(referenceNodes[i], i));
+                references.Add(new SRZoneMeshFileReference(referenceNodes[i], i, vFileHeader));
         }
 
         /// <summary>
@@ -194,6 +203,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             offsetWriter.Write("x", fileReferenceOffset.x);
             offsetWriter.Write("y", fileReferenceOffset.y);
             offsetWriter.Write("z", fileReferenceOffset.z);
+            writer.WriteHex("file_references_ptr", fileReferencesPtr);
             writer.Write("zone_type", zoneType);
             string zoneTypeName = (zoneType < WorldZoneTypeNames.Length) ? WorldZoneTypeNames[zoneType] : "unknown";
             writer.Write("zone_type_description", zoneTypeName);    // informational only

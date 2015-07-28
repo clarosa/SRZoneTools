@@ -57,7 +57,15 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         public void Write(string name, string value, int index = 0)
         {
-            CreateNode(name, index).InnerText = value;
+            XmlNode node = CreateNode(name, index);
+            // The following is a work-around for a quirk of the XmlWriter.
+            // Normally, if the innerText is not empty, XML entities are written as "<tag>value</tag>".
+            // But if innerText is an empty string, the XML entity is written as "<tag>\n    </tag>".
+            // This causes problems during read because the newline is added to the string (very BAD).
+            // The solution is not to add ANY innerText when the string is an empty string, which properly
+            // causes an empty string to be written (as "<tag />").
+            if (value != "")
+                node.InnerText = value;
         }
 
         public void Write(string name, Int16 value, int index = 0)

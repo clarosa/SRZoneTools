@@ -29,22 +29,61 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         // FIELD VALUES
 
-        private SRRawDataBlock data;
+        Int16 m_pos_x;
+        Int16 m_pos_y;
+        Int16 m_pos_z;
+        Int16 pitch;
+        Int16 bank;
+        Int16 heading;
+        string name;
+
+        // LOCAL VARIABLES
+
+        private SRVFileHeader vFileHeader;
 
         // CONSTRUCTORS
 
-        public SRZoneMeshFileReference()
+        public SRZoneMeshFileReference(SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
         }
 
-        public SRZoneMeshFileReference(SRBinaryReader binaryReader, int index)
+        public SRZoneMeshFileReference(SRBinaryReader binaryReader, int index, SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
             Read(binaryReader, index);
         }
 
-        public SRZoneMeshFileReference(XmlNode parentNode, int index)
+        public SRZoneMeshFileReference(XmlNode parentNode, int index, SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
             ReadXml(parentNode, index);
+        }
+
+        // CONVERSION METHODS
+
+        // Uncompress a 16-bit mesh file reference position offset
+        // https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/#post-78567
+        public float MeshPosToFloat(Int16 pos)
+        {
+            return (float)pos / (float)(1 << 6);
+        }
+
+        public Int16 MeshPosToInt16(float pos)
+        {
+            return (Int16)Math.Round(pos * (1 << 6));
+        }
+
+        // Uncompress a 16-bit mesh file reference orientation
+        // https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/#post-78567
+        public float MeshOrientToFloat(Int16 pos)
+        {
+            return (float)pos / (float)(1 << 12);
+        }
+
+        public Int16 MeshOrientToInt16(float pos)
+        {
+            return (Int16)Math.Round(pos * (1 << 12));
         }
 
         // READERS / WRITERS
@@ -58,8 +97,15 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         {
             try
             {
-                data = new SRRawDataBlock(binaryReader, 14);
-                SRTrace.WriteLine("    REFERENCE #{0}:  {1}", index + 1, data.ToString());
+                m_pos_x = binaryReader.ReadInt16();
+                m_pos_y = binaryReader.ReadInt16();
+                m_pos_z = binaryReader.ReadInt16();
+                pitch = binaryReader.ReadInt16();
+                bank = binaryReader.ReadInt16();
+                heading = binaryReader.ReadInt16();
+                int m_str_offset = binaryReader.ReadInt16();
+                SRTrace.WriteLine("    REFERENCE #{0}:  {1},{2},{3},{4},{5},{6},{7}", index + 1, m_pos_x, m_pos_y, m_pos_z, pitch, bank, heading, m_str_offset);
+                name = vFileHeader.GetReferenceNameByReadOffset(m_str_offset);
             }
             catch (Exception e)
             {
@@ -79,7 +125,13 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         {
             try
             {
-                data.Write(binaryWriter);
+                binaryWriter.Write(m_pos_x);
+                binaryWriter.Write(m_pos_y);
+                binaryWriter.Write(m_pos_z);
+                binaryWriter.Write(pitch);
+                binaryWriter.Write(bank);
+                binaryWriter.Write(heading);
+                binaryWriter.Write((UInt16)vFileHeader.GetReferenceWriteOffsetByName(name));
             }
             catch (Exception e)
             {
@@ -99,7 +151,14 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         {
             try
             {
-                data = new SRRawDataBlock(thisNode);
+                SRXmlNodeReader reader = new SRXmlNodeReader(thisNode);
+                name = reader.ReadString("file");
+                m_pos_x = MeshPosToInt16(reader.ReadSingle("pos_x"));
+                m_pos_y = MeshPosToInt16(reader.ReadSingle("pos_y"));
+                m_pos_z = MeshPosToInt16(reader.ReadSingle("pos_z"));
+                pitch = MeshOrientToInt16(reader.ReadSingle("pitch"));
+                bank = MeshOrientToInt16(reader.ReadSingle("bank"));
+                heading = MeshOrientToInt16(reader.ReadSingle("heading"));
             }
             catch (Exception e)
             {
@@ -120,7 +179,13 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             try
             {
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
-                data.WriteXml(writer.Node);
+                writer.Write("file", name);
+                writer.Write("pos_x", MeshPosToFloat(m_pos_x));
+                writer.Write("pos_y", MeshPosToFloat(m_pos_y));
+                writer.Write("pos_z", MeshPosToFloat(m_pos_z));
+                writer.Write("pitch", MeshOrientToFloat(pitch));
+                writer.Write("bank", MeshOrientToFloat(bank));
+                writer.Write("heading", MeshOrientToFloat(heading));
             }
             catch (Exception e)
             {

@@ -116,7 +116,7 @@ namespace SRReadZone
                     throw new Exception("Incorrect signature.");
                 int version2 = binaryReader.ReadInt32();
                 Console.WriteLine("  World Zone Version:     {0}", version2);
-                if (version2 != 29)
+                if (version2 != 29 && version2 != 32)  // version 29 = SR3, 32 = SR4
                     throw new Exception("Incorrect version.");
                 int v_file_header_ptr = binaryReader.ReadInt32();
                 Console.WriteLine("  V-File Header Pointer:  0x{0:X8}", v_file_header_ptr);
@@ -405,7 +405,7 @@ namespace SRReadZone
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1075 $";
+            string svnRevision = "$Revision: 1084 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();

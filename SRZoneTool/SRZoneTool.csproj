@@ -52,10 +52,9 @@
     <Compile Include="SRZoneFile\SRWorldZoneHeader.cs" />
     <Compile Include="SRZoneFile\SRXmlNodeReader.cs" />
     <Compile Include="SRZoneFile\SRXmlNodeWriter.cs" />
+    <Compile Include="SRZoneFile\SRZoneCombinedFile.cs" />
     <Compile Include="SRZoneFile\SRZoneDataProperty.cs" />
-    <Compile Include="SRZoneFile\SRZoneFile.cs" />
     <Compile Include="SRZoneFile\SRZoneFileException.cs" />
-    <Compile Include="SRZoneFile\SRZoneHeaderFile.cs" />
     <Compile Include="SRZoneFile\SRZoneMeshFileReference.cs" />
     <Compile Include="SRZoneFile\SRZoneObject.cs" />
     <Compile Include="SRZoneFile\SRZoneProperty.cs" />

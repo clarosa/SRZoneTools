@@ -46,12 +46,20 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         // OPTIONS
 
+        public bool OptionNameReferenceIdentifier = true;
 
         // FIELD VALUES
 
         private UInt16 signature;
         private UInt16 version;
+        private UInt32 refDataStart;
+        private UInt32 unknown;
         private List<string> referenceData;
+
+        // LOCAL VARIABLES
+
+        private Dictionary<long, string> referenceNamesByReadOffset;
+        private Dictionary<string, long> referenceWriteOffsetsByName;
 
         // CONSTRUCTORS
 
@@ -69,6 +77,22 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             ReadXml(parentNode);
         }
 
+        // HELPERS
+
+        public string GetReferenceNameByReadOffset(long offset)
+        {
+            if (!referenceNamesByReadOffset.ContainsKey(offset))
+                throw new SRZoneFileException("Reference does not exist in V-File Header at offset \"" + offset.ToString() + "\".");
+            return referenceNamesByReadOffset[offset];
+        }
+
+        public long GetReferenceWriteOffsetByName(string name)
+        {
+            if (!referenceWriteOffsetsByName.ContainsKey(name))
+                throw new SRZoneFileException("Reference \"" + name + "\" does not exist in V-File Header.");
+            return referenceWriteOffsetsByName[name];
+        }
+
         // READERS / WRITERS
 
         /// <summary>
@@ -83,29 +107,35 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             signature = binaryReader.ReadUInt16();
             Console.WriteLine("  V-File Signature:      0x{0:X4}", signature);
             if (signature != 0x3854)
-                throw new Exception("Incorrect signature.  Not a valid zone header file.");
+                throw new Exception("Incorrect V-file signature.  Not a valid zone header file.");
             version = binaryReader.ReadUInt16();
             Console.WriteLine("  V-File Version:        {0}", version);
             if (version != 4)
-                throw new Exception("Incorrect version.");
+                throw new Exception("Incorrect V-file version.");
             int refDataSize = binaryReader.ReadInt32();
             Console.WriteLine("  Reference Data Size:   {0}", refDataSize);
-            int refDataStart = binaryReader.ReadInt32();
+            refDataStart = binaryReader.ReadUInt32();
             Console.WriteLine("  Reference Data Start:  0x{0:X8}", refDataStart);
-            if (refDataStart != 0)
-                throw new SRZoneFileException("Expected reference data start to be zero.");
+//            if (refDataStart != 0)
+//                throw new SRZoneFileException("Expected reference data start to be zero.");
             int refCount = binaryReader.ReadInt32();
             Console.WriteLine("  Reference Count:       {0}", refCount);
-            binaryReader.BaseStream.Seek(16, SeekOrigin.Current);
+            unknown = binaryReader.ReadUInt32();
+            Console.WriteLine("  Unknown:               0x{0:X8}", unknown);
+            binaryReader.BaseStream.Seek(12, SeekOrigin.Current);
             long refDataOffset = binaryReader.BaseStream.Position;
             Console.WriteLine("");
             Console.WriteLine("  REFERENCE DATA:");
             referenceData = new List<string>(refCount);
+            referenceNamesByReadOffset = new Dictionary<long, string>(refCount);
+            var positionDataStart = binaryReader.BaseStream.Position;
             for (int i = 1; i <= refCount; i++)
             {
+                long offset = binaryReader.BaseStream.Position - positionDataStart;
                 string name = binaryReader.ReadString();
                 Console.WriteLine("   {0,3}. {1}", i, name);
                 referenceData.Add(name);
+                referenceNamesByReadOffset.Add(offset, OptionNameReferenceIdentifier ? name : i.ToString());
             }
             var finalNull = binaryReader.ReadByte();
             if (finalNull != 0)
@@ -122,13 +152,23 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             binaryWriter.Write(version);
             var positionSize = binaryWriter.BaseStream.Position;
             binaryWriter.Write((UInt32)0);      // refDataSize (will rewrite later)
-            binaryWriter.Write((UInt32)0);      // refDataStart
+            binaryWriter.Write(refDataStart);
             binaryWriter.Write((UInt32)referenceData.Count);
-            for (int i = 0; i < 16; i++)
+            binaryWriter.Write((UInt32)unknown);
+            for (int i = 0; i < 12; i++)
                 binaryWriter.Write((Byte)0);
+            referenceWriteOffsetsByName = new Dictionary<string, long>(referenceData.Count);
             var positionDataStart = binaryWriter.BaseStream.Position;
             for (int i = 0; i < referenceData.Count; i++)
-                binaryWriter.Write(referenceData[i]);
+            {
+                string id = (i + 1).ToString();
+                string name = referenceData[i];
+                long offset = binaryWriter.BaseStream.Position - positionDataStart;
+                referenceWriteOffsetsByName.Add(id, offset);
+                if (!referenceWriteOffsetsByName.ContainsKey(name))
+                    referenceWriteOffsetsByName.Add(name, offset);
+                binaryWriter.Write(name);
+            }
             var actualDataSize = binaryWriter.BaseStream.Position - positionDataStart;
             binaryWriter.Write((Byte)0);
 
@@ -150,6 +190,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             SRXmlNodeReader reader = new SRXmlNodeReader(parentNode, XmlTagName);
             signature = reader.ReadUInt16("signature");
             version = reader.ReadUInt16("version");
+            refDataStart = reader.ReadUInt32("ref_data_start");
+            unknown = reader.ReadUInt32("unknown");
             XmlNodeList referenceNodes = reader.Node.SelectNodes("./reference_data/reference");
             var numReferences = referenceNodes.Count;
             referenceData = new List<string>(numReferences);
@@ -168,6 +210,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName);
             writer.WriteHex("signature", signature);
             writer.Write("version", version);
+            writer.Write("ref_data_start", refDataStart);
+            writer.Write("unknown", unknown);
             SRXmlNodeWriter referenceDataWriter = new SRXmlNodeWriter(writer, "reference_data");
             for (int i = 0; i < referenceData.Count; i++)
                 referenceDataWriter.Write("reference", referenceData[i], i + 1);

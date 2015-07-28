@@ -62,6 +62,9 @@ PACKAGE VERSION HISTORY
   0.1    [2015-07-08]  Initial release of SRReadZone tool.
   0.2    [2015-07-09]  Added "-n" normalize option to SRReadZone tool.
   0.3    [2015-07-26]  Initial release of ZRZoneTool tool.
+  0.4    [2015-07-27]  ZRZoneTool now parses all known data structures.
+                       Can combine header and zone data in a single XML file.
+                       Full SR4 compatibility for all tools.
 
 -------------------------------------------------------------------------------
 DISCLAIMER:
