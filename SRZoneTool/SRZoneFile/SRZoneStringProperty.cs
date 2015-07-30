@@ -69,6 +69,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         // SYSTEM OBJECT OVERRIDES
 
+        // IMPORTANT:  This must always return the string value only because other functions rely on that.
         public override string ToString()
         {
             return value;

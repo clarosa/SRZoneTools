@@ -228,7 +228,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
                 writer.Write("type", Type);
                 string typeName = (Type < PropertyTypeNames.Length) ? PropertyTypeNames[Type] : "unknown";
-                writer.Write("description", typeName);
+                writer.Write("type_description", typeName);
                 writer.WriteHex("name_crc", nameCrc);
                 WriteXmlData(writer.Node);
                 if (paddingData != null)

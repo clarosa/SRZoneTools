@@ -34,7 +34,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         private UInt64 parentHandleOffset = 0;
         private Int32 objectTypeHash = 0;
         private UInt16 padding = 0;
-        private UInt16 nameIndex = 0;                   // Calculated property index of nameOffset
+        private string name = null;                     // Calculated name
         private List<SRZoneProperty> propertyList;
 
         // PROPERTIES
@@ -89,18 +89,24 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     throw new SRZoneFileException("Object has no properties.");
                 propertyList = new List<SRZoneProperty>(propertyCount);
                 var namePosition = binaryReader.BaseStream.Position + nameOffset - SRZoneProperty.DataOffset;
-                nameIndex = 0;
+                name = null;
                 for (int i = 0; i < propertyCount; i++)
                 {
-                    if (AlignUp(binaryReader.BaseStream.Position, SRZoneProperty.Alignment) == namePosition)
-                        nameIndex = (UInt16)(i + 1);
-                    propertyList.Add(SRZoneProperty.Create(binaryReader, i));
+                    long position = AlignUp(binaryReader.BaseStream.Position, SRZoneProperty.Alignment);
+                    SRZoneProperty property = SRZoneProperty.Create(binaryReader, i);
+                    propertyList.Add(property);
+                    if (position == namePosition)
+                    {
+                        if (property is SRZoneStringProperty)
+                            name = property.ToString();
+                        else if (property.Type == SRZoneProperty.StringType)
+                            name = (i + 1).ToString();
+                        else
+                            throw new SRZoneFileException("Name Offset does not point to a string property.");
+                    }
                 }
-                if (nameOffset != 0 && nameIndex == 0)
+                if (nameOffset != 0 && name == null)
                     throw new SRZoneFileException("Name Offset does not point to a valid property.");
-                // Note: "is SRZoneStringProperty" is not used here in case OptionParseValues is false:
-                if (nameIndex != 0 && !(propertyList[nameIndex - 1].Type == SRZoneProperty.StringType))
-                    throw new SRZoneFileException("Name Offset does not point to a string property.");
             }
             catch (Exception e)
             {
@@ -134,8 +140,13 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 for (int i = 0; i < propertyList.Count; i++)
                 {
                     binaryWriter.Align(SRZoneProperty.Alignment);
-                    if (i == nameIndex - 1)
-                        newNameOffset = (UInt16)(binaryWriter.BaseStream.Position - startPosition + SRZoneProperty.DataOffset);
+                    if (name != null && newNameOffset == 0 && (propertyList[i] is SRZoneStringProperty && propertyList[i].NameCrc == 0x355EF946 && propertyList[i].ToString() == name || (i + 1).ToString() == name))
+                    {
+                        if (propertyList[i].Type == SRZoneProperty.StringType)
+                            newNameOffset = (UInt16)(binaryWriter.BaseStream.Position - startPosition + SRZoneProperty.DataOffset);
+                        else
+                            throw new SRZoneFileException("Name does not reference a string property.");
+                    }
                     propertyList[i].Write(binaryWriter, i);
                 }
                 binaryWriter.Align(SRZoneProperty.Alignment);       // Align for buffer size calculation
@@ -166,10 +177,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             try
             {
                 SRXmlNodeReader reader = new SRXmlNodeReader(thisNode);
+                name = reader.ReadString("name");
+                if (name == "") name = null;
                 handleOffset = reader.ReadUInt64("handle_offset");
                 parentHandleOffset = reader.ReadUInt64("parent_handle_offset");
                 objectTypeHash = reader.ReadInt32("object_type_hash");
-                nameIndex = reader.ReadUInt16("name_index");
                 padding = reader.ReadUInt16("padding");
                 XmlNodeList propertyNodes = reader.Node.SelectNodes("./properties/" + SRZoneProperty.XmlTagName);
                 propertyList = new List<SRZoneProperty>(propertyNodes.Count);
@@ -196,10 +208,10 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             {
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
 
+                writer.Write("name", name != null ? name : "");
                 writer.WriteHex("handle_offset", handleOffset);
                 writer.WriteHex("parent_handle_offset", parentHandleOffset);
                 writer.WriteHex("object_type_hash", objectTypeHash);
-                writer.Write("name_index", nameIndex);
                 writer.Write("padding", padding);
 
                 XmlNode propertiesNode = writer.CreateNode("properties");

@@ -387,7 +387,7 @@ namespace SRReadZone
         static void ShowHelp(string programName, OptionSet options)
         {
             Console.WriteLine("Parses and displays the contents of a Saints Row zone file.");
-            Console.WriteLine("Supports Saints Row: The Third, Saints Row 4, and Saints Row: Gat Out Of Hell.");
+            Console.WriteLine("Supports Saints Row: The Third and Saints Row IV.");
             Console.WriteLine("This actually parses 2 files:");
             Console.WriteLine("  1.  CPU Zone Header file (\"filename.czh_pc\")");
             Console.WriteLine("  2.  CPU Zone [Data] file (\"filename.czn_pc\")");
@@ -405,7 +405,7 @@ namespace SRReadZone
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1084 $";
+            string svnRevision = "$Revision: 1089 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();

@@ -23,7 +23,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         {
             Console.WriteLine();
             Console.WriteLine("Converts a zone file or zone header file to and from XML format.");
-            Console.WriteLine("Supports Saints Row: The Third, Saints Row 4, and Saints Row: Gat Out Of Hell.");
+            Console.WriteLine("Supports Saints Row: The Third and Saints Row IV.");
             Console.WriteLine();
             Console.WriteLine("Usage: " + programName + " filename [OPTIONS]+");
             Console.WriteLine();
@@ -48,7 +48,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1081 $";
+            string svnRevision = "$Revision: 1089 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();

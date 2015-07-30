@@ -1,7 +1,7 @@
 SRZoneTools - Saints Row Zone File Tools
 Copyright (c) 2015 by Christopher LaRosa.  All rights reserved.
 
-Supports Saints Row: The Third, Saints Row 4, and Saints Row: Gat Out Of Hell.
+Supports Saints Row: The Third and Saints Row IV.
 
 This package contains the Visual C# source code for the SRZoneTools package.
 It can be built using Microsoft Visual Studio Express 2013 for Windows Desktop.

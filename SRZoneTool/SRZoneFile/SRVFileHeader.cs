@@ -192,7 +192,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             version = reader.ReadUInt16("version");
             refDataStart = reader.ReadUInt32("ref_data_start");
             unknown = reader.ReadUInt32("unknown");
-            XmlNodeList referenceNodes = reader.Node.SelectNodes("./reference_data/reference");
+            XmlNodeList referenceNodes = reader.Node.SelectNodes("./references/reference");
             var numReferences = referenceNodes.Count;
             referenceData = new List<string>(numReferences);
             for (int i = 0; i < numReferences; i++)
@@ -212,7 +212,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             writer.Write("version", version);
             writer.Write("ref_data_start", refDataStart);
             writer.Write("unknown", unknown);
-            SRXmlNodeWriter referenceDataWriter = new SRXmlNodeWriter(writer, "reference_data");
+            SRXmlNodeWriter referenceDataWriter = new SRXmlNodeWriter(writer, "references");
             for (int i = 0; i < referenceData.Count; i++)
                 referenceDataWriter.Write("reference", referenceData[i], i + 1);
         }

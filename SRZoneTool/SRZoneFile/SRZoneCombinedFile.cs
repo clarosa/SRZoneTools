@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -203,6 +204,15 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 XmlDocument xmlDocument = new XmlDocument();
                 XmlElement xmlRoot = xmlDocument.CreateElement("root");
                 xmlDocument.AppendChild(xmlRoot);
+
+                // Write the tool version number (major.minor version determines XML format)
+                SRXmlNodeWriter nodeWriter = new SRXmlNodeWriter(xmlRoot, "srzonetool");
+                Assembly assem = Assembly.GetEntryAssembly();
+                AssemblyName assemName = assem.GetName();
+                Version ver = assemName.Version;
+                nodeWriter.Write("version", ver.Major + "." + ver.Minor);
+
+                // Write the zone header section, if there is one
                 if (vFileHeader != null && worldZoneHeader != null)
                 {
                     XmlElement czhFileNode = xmlDocument.CreateElement(XmlZoneHeaderTagName);
@@ -210,6 +220,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     vFileHeader.WriteXml(czhFileNode);
                     worldZoneHeader.WriteXml(czhFileNode);
                 }
+
+                // Write the zone data section, if there is one
                 if (fileSections != null)
                 {
                     XmlElement cznFileNode = xmlDocument.CreateElement(XmlZoneDataTagName);
@@ -218,6 +230,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     foreach (SRZoneSection section in fileSections)
                         section.WriteXml(cznFileNode, index++);
                 }
+
                 xmlDocument.Save(xmlFile);
             }
             catch (Exception e)
