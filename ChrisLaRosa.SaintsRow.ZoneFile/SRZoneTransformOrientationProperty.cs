@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
-    class SROrientation
+    public class SROrientation
     {
         public float x, y, z, w;
         public SROrientation(float x = 0, float y = 0, float z = 0, float w = 0)

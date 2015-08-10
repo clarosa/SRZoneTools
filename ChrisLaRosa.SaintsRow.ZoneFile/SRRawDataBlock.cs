@@ -16,7 +16,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Raw data block.  This contains any arbitrary block of data.
     /// </summary>
-    class SRRawDataBlock : SRDataBlockSingleBase
+    public class SRRawDataBlock : SRDataBlockSingleBase
     {
         // CONSTANTS
 

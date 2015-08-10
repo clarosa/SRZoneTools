@@ -18,7 +18,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// Object Property Abstract Base Class.
     /// One or more of these data blocks are contained within an SRZoneObject block.
     /// </summary>
-    abstract class SRZoneProperty : SRDataBlockMultiBase
+    public abstract class SRZoneProperty : SRDataBlockMultiBase
     {
         // CONSTANTS
 

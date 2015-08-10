@@ -18,7 +18,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// World Zone Header.
     /// This data block appears within the Zone Header file.
     /// </summary>
-    class SRWorldZoneHeader : SRDataBlockSingleBase
+    public class SRWorldZoneHeader : SRDataBlockSingleBase
     {
         // CONSTANTS
 

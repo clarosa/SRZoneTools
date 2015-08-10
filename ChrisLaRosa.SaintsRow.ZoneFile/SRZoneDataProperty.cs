@@ -17,7 +17,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Object property value which represents generic data.
     /// </summary>
-    class SRZoneDataProperty : SRZoneProperty
+    public class SRZoneDataProperty : SRZoneProperty
     {
         // FIELD VALUES
 

@@ -13,7 +13,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Extension of the System.IO.BinaryReader class with some added functions.
     /// </summary>
-    class SRBinaryReader : BinaryReader
+    public class SRBinaryReader : BinaryReader
     {
         public SRBinaryReader(Stream s) : base(s) { }
 

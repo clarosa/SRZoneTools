@@ -17,7 +17,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Object property value which represents a string.
     /// </summary>
-    class SRZoneStringProperty : SRZoneProperty
+    public class SRZoneStringProperty : SRZoneProperty
     {
         // FIELD VALUES
 

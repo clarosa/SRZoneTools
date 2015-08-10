@@ -15,7 +15,7 @@ using System.Xml;
 
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
-    class SRTransform
+    public class SRTransform
     {
         public float x, y, z;
 

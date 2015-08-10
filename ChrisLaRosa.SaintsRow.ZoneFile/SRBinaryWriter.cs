@@ -13,7 +13,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Extension of the System.IO.BinaryWriter class with some added functions.
     /// </summary>
-    class SRBinaryWriter : BinaryWriter
+    public class SRBinaryWriter : BinaryWriter
     {
         public SRBinaryWriter(Stream s) : base(s) { }
 

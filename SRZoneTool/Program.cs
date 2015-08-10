@@ -48,7 +48,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1089 $";
+            string svnRevision = "$Revision: 1101 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();
@@ -70,7 +70,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
                 { "no-keep-padding", "don't preserve property padding on zone file read", v => { if (v != null) SRZoneProperty.OptionPreservePadding = false; } },
                 { "no-parse-object", "don't parse objects on zone file read", v => { if (v != null) SRZoneSection.OptionParseObjects = false; } },
                 { "no-parse-property", "don't parse property values on zone file read", v => { if (v != null) SRZoneProperty.OptionParseValues = false; } },
-                { "rebuild-handle-list", "rebuild object handle list before writing", v => { if (v != null) SRZoneSectionDataObjects.OptionRebuildHandleList = true; } },
+                { "rebuild-handle-list", "rebuild object handle list before writing", v => { if (v != null) SRZoneObjectSectionCpuData.OptionRebuildHandleList = true; } },
             };
 
             try

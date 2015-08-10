@@ -13,9 +13,9 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Provides more robust WriteLine functionality than the built-in Trace class.
     /// </summary>
-    class SRTrace
+    public class SRTrace
     {
-        public static bool Enable;
+        public static bool Enable = false;
 
         /// <summary>
         /// Writes to the console only when SRTrace is enabled.

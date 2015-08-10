@@ -12,7 +12,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Abstract base class for all data blocks.
     /// </summary>
-    abstract class SRDataBlockBase
+    public abstract class SRDataBlockBase
     {
         /// <summary>
         /// Calculates the smallest number that must be added to the given offset

@@ -13,7 +13,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Abstract base class for data blocks that can have only a single instance within their parent data block.
     /// </summary>
-    abstract class SRDataBlockSingleBase : SRDataBlockBase
+    public abstract class SRDataBlockSingleBase : SRDataBlockBase
     {
         /// <summary>
         /// Reads a data block from a file binary stream.

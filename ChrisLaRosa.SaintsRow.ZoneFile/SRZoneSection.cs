@@ -17,7 +17,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Zone file section block.  The zone file consists of a series of these blocks.
     /// </summary>
-    class SRZoneSection : SRDataBlockMultiBase
+    public class SRZoneSection : SRDataBlockMultiBase
     {
         // CONSTANTS
 
@@ -62,6 +62,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         private UInt32 sectionID = 0;
         private UInt32 gpuSize = 0;
         private SRDataBlockSingleBase cpuData = null;
+
+        // PROPERTIES
+
+        public UInt32 SectionId { get { return sectionID; } }
+        public UInt32 GpuSize { get { return gpuSize; } }
+        public SRDataBlockSingleBase CpuData { get { return cpuData; } }
 
         // CONSTRUCTORS
 
@@ -134,7 +140,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 if (cpuSize == 0)
                     cpuData = null;
                 else if (OptionParseObjects && SectionType() == 0x2234)
-                    cpuData = new SRZoneSectionDataObjects(binaryReader, (int)cpuSize);
+                    cpuData = new SRZoneObjectSectionCpuData(binaryReader, (int)cpuSize);
                 else
                     cpuData = new SRRawDataBlock(binaryReader, (int)cpuSize);
             }
@@ -200,7 +206,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 else if (SRRawDataBlock.HasRawXmlData(cpuDataNode))
                     cpuData = new SRRawDataBlock(cpuDataNode);
                 else
-                    cpuData = new SRZoneSectionDataObjects(cpuDataNode);
+                    cpuData = new SRZoneObjectSectionCpuData(cpuDataNode);
             }
             catch (Exception e)
             {

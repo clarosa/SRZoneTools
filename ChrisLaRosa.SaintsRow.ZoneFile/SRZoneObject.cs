@@ -19,7 +19,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// One or more of these data blocks are contained within an SRZoneSectionDataObjects block.
     /// It contains a header followed by a SRPropertyData block.
     /// </summary>
-    class SRZoneObject : SRDataBlockMultiBase
+    public class SRZoneObject : SRDataBlockMultiBase
     {
         // CONSTANTS
 
@@ -40,6 +40,10 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // PROPERTIES
 
         public UInt64 HandleOffset { get { return handleOffset; } }
+        public UInt64 ParentHandleOffset { get { return parentHandleOffset; } }
+        public Int32 ObjectTypeHash { get { return objectTypeHash; } }
+        public string Name { get { return name; } }
+        public List<SRZoneProperty> PropertyList { get { return propertyList; } }
 
         // CONSTRUCTORS
 

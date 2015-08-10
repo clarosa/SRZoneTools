@@ -18,7 +18,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// V File Header.
     /// This data block appears within the Zone Header file.
     /// </summary>
-    class SRVFileHeader : SRDataBlockSingleBase
+    public class SRVFileHeader : SRDataBlockSingleBase
     {
 
         public const string XmlTagName = "v_file_header";     // Used in XML documents

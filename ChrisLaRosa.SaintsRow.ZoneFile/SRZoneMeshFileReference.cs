@@ -18,7 +18,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// Mesh File Reference.
     /// Zero or more of these data blocks are contained within the SRWorldZoneHeader.
     /// </summary>
-    class SRZoneMeshFileReference : SRDataBlockMultiBase
+    public class SRZoneMeshFileReference : SRDataBlockMultiBase
     {
         // CONSTANTS
 

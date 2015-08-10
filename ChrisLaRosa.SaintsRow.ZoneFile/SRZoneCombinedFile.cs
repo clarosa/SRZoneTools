@@ -19,7 +19,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Reads and writes Saints Row Zone Files.
     /// </summary>
-    class SRZoneCombinedFile
+    public class SRZoneCombinedFile
     {
         // CONSTANTS
 
@@ -30,7 +30,26 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         
         private SRVFileHeader vFileHeader = null;
         private SRWorldZoneHeader worldZoneHeader = null;
-        private List<SRZoneSection> fileSections = null;
+        private List<SRZoneSection> sectionList = null;
+
+        // PROPERTIES
+
+        public SRVFileHeader VFileHeader { get { return vFileHeader; } }
+        public SRWorldZoneHeader WorldZoneHeader { get { return worldZoneHeader; } }
+        public List<SRZoneSection> SectionList { get { return sectionList; } }
+
+        // CONSTRUCTORS
+
+        public SRZoneCombinedFile()
+        {
+        }
+
+        public SRZoneCombinedFile(string fileName)
+        {
+            ReadFile(fileName);
+        }
+
+        // READERS / WRITERS
 
         /// <summary>
         /// Reads the zone header file into memory.
@@ -106,12 +125,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             FileStream stream = null;
             try
             {
-                fileSections = new List<SRZoneSection>();
+                sectionList = new List<SRZoneSection>();
                 stream = new FileStream(cznFile, FileMode.Open, FileAccess.Read);
                 SRBinaryReader binaryReader = new SRBinaryReader(stream);
                 int index = 0;
                 while (binaryReader.BaseStream.Position <= binaryReader.BaseStream.Length - 4)
-                    fileSections.Add(new SRZoneSection(binaryReader, index++));
+                    sectionList.Add(new SRZoneSection(binaryReader, index++));
             }
             catch (Exception e)
             {
@@ -136,12 +155,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             SRBinaryWriter binaryWriter = null;
             try
             {
-                if (fileSections == null)
+                if (sectionList == null)
                     throw new SRZoneFileException("No zone data to write.");
                 stream = File.Open(cznFile, FileMode.Create);
                 binaryWriter = new SRBinaryWriter(stream);
                 int index = 0;
-                foreach (SRZoneSection section in fileSections)
+                foreach (SRZoneSection section in sectionList)
                     section.Write(binaryWriter, index++);
             }
             catch (Exception e)
@@ -172,11 +191,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 xmlDocument.Load(xmlFile);
                 if (xmlDocument.SelectSingleNode("/root/" + XmlZoneDataTagName) != null)
                 {
-                    fileSections = new List<SRZoneSection>();
+                    sectionList = new List<SRZoneSection>();
                     XmlNodeList selectNodeList = xmlDocument.SelectNodes("/root/" + XmlZoneDataTagName + "/" + SRZoneSection.XmlTagName);
                     int index = 0;
                     foreach (XmlNode selectNode in selectNodeList)
-                        fileSections.Add(new SRZoneSection(selectNode, index++));
+                        sectionList.Add(new SRZoneSection(selectNode, index++));
                 }
                 XmlNode zoneHeaderNode = xmlDocument.SelectSingleNode("/root/" + XmlZoneHeaderTagName);
                 if (zoneHeaderNode != null)
@@ -222,12 +241,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 }
 
                 // Write the zone data section, if there is one
-                if (fileSections != null)
+                if (sectionList != null)
                 {
                     XmlElement cznFileNode = xmlDocument.CreateElement(XmlZoneDataTagName);
                     xmlRoot.AppendChild(cznFileNode);
                     int index = 0;
-                    foreach (SRZoneSection section in fileSections)
+                    foreach (SRZoneSection section in sectionList)
                         section.WriteXml(cznFileNode, index++);
                 }
 

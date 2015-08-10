@@ -19,7 +19,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// This data block appears within the CPU Data of a Section block of type 0x2234.
     /// It contains a header followed by a list of Object data items.
     /// </summary>
-    class SRZoneSectionDataObjects : SRDataBlockSingleBase
+    public class SRZoneObjectSectionCpuData : SRDataBlockSingleBase
     {
 
         public const string XmlTagName = "object_data";     // Used in XML documents
@@ -38,21 +38,26 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         UInt32 handleListPointer;
         UInt32 objectDataPointer;
         UInt32 objectDataSize;
-        UInt64[] handleList;
-        SRZoneObject[] objectList;
+        List<UInt64> handleList;
+        List<SRZoneObject> objectList;
+
+        // PROPERTIES
+
+        public List<UInt64> HandleList { get { return handleList; } }
+        public List<SRZoneObject> ObjectList { get { return objectList; } }
 
         // CONSTRUCTORS
 
-        public SRZoneSectionDataObjects()
+        public SRZoneObjectSectionCpuData()
         {
         }
 
-        public SRZoneSectionDataObjects(SRBinaryReader binaryReader, int size)
+        public SRZoneObjectSectionCpuData(SRBinaryReader binaryReader, int size)
         {
             Read(binaryReader, size);
         }
 
-        public SRZoneSectionDataObjects(XmlNode parentNode)
+        public SRZoneObjectSectionCpuData(XmlNode parentNode)
         {
             ReadXml(parentNode);
         }
@@ -90,15 +95,15 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             SRTrace.WriteLine("    Object Data Size:     {0,-10}  (run-time)", objectDataSize);
             SRTrace.WriteLine("");
             SRTrace.WriteLine("    HANDLE LIST:");
-            handleList = new UInt64[numHandles];
+            handleList = new List<UInt64>((int)numHandles);
             for (int i = 0; i < numHandles; i++)
             {
-                handleList[i] = binaryReader.ReadUInt64();
+                handleList.Add(binaryReader.ReadUInt64());
                 SRTrace.WriteLine("     {0,3}. 0x{1:X16}", i + 1, handleList[i]);
             }
-            objectList = new SRZoneObject[numObjects];
+            objectList = new List<SRZoneObject>((int)numObjects);
             for (int i = 0; i < numObjects; i++)
-                objectList[i] = new SRZoneObject(binaryReader, i);
+                objectList.Add(new SRZoneObject(binaryReader, i));
         }
 
         /// <summary>
@@ -109,8 +114,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         {
             binaryWriter.Write(signature);
             binaryWriter.Write(version);
-            binaryWriter.Write((UInt32)objectList.Length);
-            binaryWriter.Write((UInt32)handleList.Length);
+            binaryWriter.Write((UInt32)objectList.Count);
+            binaryWriter.Write((UInt32)handleList.Count);
             binaryWriter.Write(flags);
             binaryWriter.Write(handleListPointer);
             binaryWriter.Write(objectDataPointer);
@@ -119,8 +124,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             if (OptionRebuildHandleList)
             {
                 // BUILD HANDLE LIST
-                UInt64[] newHandleList = new UInt64[objectList.Length];
-                for (int i = 0; i < objectList.Length; i++)
+                UInt64[] newHandleList = new UInt64[objectList.Count];
+                for (int i = 0; i < objectList.Count; i++)
                     newHandleList[i] = objectList[i].HandleOffset;
                 Array.Sort(newHandleList);
                 for (int i = 0; i < newHandleList.Length; i++)
@@ -128,11 +133,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             }
             else
             {
-                for (int i = 0; i < handleList.Length; i++)
+                for (int i = 0; i < handleList.Count; i++)
                     binaryWriter.Write(handleList[i]);
             }
 
-            for (int i = 0; i < objectList.Length; i++)
+            for (int i = 0; i < objectList.Count; i++)
                 objectList[i].Write(binaryWriter, i);
         }
 
@@ -154,15 +159,15 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             objectDataSize = reader.ReadUInt32("object_data_size");
             XmlNodeList handleNodes = reader.Node.SelectNodes("./handles/handle");
             var numHandles = handleNodes.Count;
-            handleList = new UInt64[numHandles];
+            handleList = new List<UInt64>((int)numHandles);
             for (int i = 0; i < numHandles; i++)
-                handleList[i] = SRXmlNodeReader.ReadUInt64(handleNodes[i]);
+                handleList.Add(SRXmlNodeReader.ReadUInt64(handleNodes[i]));
 
             XmlNodeList objectNodes = reader.Node.SelectNodes("./objects/" + SRZoneObject.XmlTagName);
             var numObjects = objectNodes.Count;
-            objectList = new SRZoneObject[numObjects];
+            objectList = new List<SRZoneObject>(numObjects);
             for (int i = 0; i < numObjects; i++)
-                objectList[i] = new SRZoneObject(objectNodes[i], i);
+                objectList.Add(new SRZoneObject(objectNodes[i], i));
         }
 
         /// <summary>

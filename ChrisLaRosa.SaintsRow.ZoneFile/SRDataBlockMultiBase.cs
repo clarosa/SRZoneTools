@@ -14,7 +14,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// Abstract base class for data blocks that can appear multiple times in a sequence.
     /// Functions within this class are passed an index which is used for informational purposes only.
     /// </summary>
-    abstract class SRDataBlockMultiBase : SRDataBlockBase
+    public abstract class SRDataBlockMultiBase : SRDataBlockBase
     {
         /// <summary>
         /// Reads a data block from a file binary stream.

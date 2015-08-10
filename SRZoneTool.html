@@ -9,19 +9,6 @@ body, table {
   color: #000;
 }
 
-/* Centered layout with width constrained for easy readability and printing. */
-/* The generally accepted printer-safe width for a page is 560 pixels.       */
-body.centered-printable, div.centered-printable {
-  /* Note: IE 6 doesn't support min-width and max-width */
-  max-width:  560px;        /* Limit width for readability               */
-  min-width:  200px;        /* Don't get too narrow                      */
-  /* Note: IE 6 doesn't support "!important" so it will use fixed width  */
-  width: auto !important;   /* Use auto width for CSS compliant browsers */
-  width: 560px;             /* Use fixed printer-safe width for IE 6     */
-  margin-left: auto;
-  margin-right: auto;
-}
-
 h1            { font-size: 23px; }
 h2            { font-size: 19px; }
 h3            { font-size: 16px; margin-bottom: 6px; }
@@ -32,19 +19,30 @@ a:visited     { color: #00F; text-decoration: none; }
 a:hover       { text-decoration: underline; }
 a[name]:hover { text-decoration: inherit; }
 
-@media print {
-  HR       { color: #FFF; background-color: #FFF; border: 0px; }
-}
-
-@media screen {
-  HR       { color: #333; background-color: #333; border: 0px; }
-}
-
 dt { margin-top: 1em; margin-bottom: 0.25em; }
 dt:first-child { margin-top: 0 }
 tt:before { content: "<" }
 tt:after { content: ">" }
 
+/* Table with borders and with aestetic cell padding */
+table.border, table.border td, table.border th {
+  border: 2px solid black;
+}
+table.border {
+  border-collapse: collapse;
+  border-spacing: 0px;
+  page-break-inside: avoid;
+}
+table.border th, table.border td {
+  margin: 0px;
+  padding: 2px 6px;
+}
+table.border th {
+  background-color: #DDD;
+}
+
+table.directions th, table.directions td { text-align: center }
+table.directions th:first-child, table.directions td:first-child { text-align: left }
 </style>
 </head>
 <body>
@@ -58,9 +56,10 @@ tt:after { content: ">" }
 <p>
  Zone files contain a large amount of data in a multitude of different formats.
  SRZoneTool converts <em>all</em> data to an XML format so it can be converted
- back to a zone file.
+ back to a zone file, but not all data is parsed.
  Unparsed data is converted to a list of bytes in hexadecimal.
- Parsed data is converted to easy-to-read named XML elements.
+ Parsed data is converted to easy-to-read named XML elements that can be easily
+ edited.
 </p>
 <p>
  The following data is parsed by SRZoneTool:
@@ -73,7 +72,6 @@ tt:after { content: ">" }
  You can read about the data that is parsed in the
  "<a href="https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/">SR3 zone file format</a>"
  thread.on the <a href="http://www.saintsrowmods.com/">saintsrowmods.com</a> forum website.
- Parsed data is converted to a human-readable XML format that can be easily edited.
 </p>
 
 <h3>Why would I want to edit zone files?</h3>
@@ -183,5 +181,35 @@ tt:after { content: ">" }
  So, you can use Sandbox+ coordinates with SRZoneTool, but you'll need to swap the y and z values.
  The units are the same.
 </p>
+<table border class="border directions">
+ <tr>
+  <th>Direction
+  <th>Game Coordinates
+  <th>Sandbox+ Coordinates
+ <tr>
+  <td>North
+  <td>Z-
+  <td>Y-
+ <tr>
+  <td>South
+  <td>Z+
+  <td>Y+
+ <tr>
+  <td>East
+  <td>X-
+  <td>X-
+ <tr>
+  <td>West
+  <td>X+
+  <td>X+
+ <tr>
+  <td>Up
+  <td>Y+
+  <td>Z+
+ <tr>
+  <td>Down
+  <td>Y-
+  <td>Z-
+</table>
 </body>
 </html>
