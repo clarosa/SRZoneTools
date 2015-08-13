@@ -107,7 +107,9 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs</Link>
     </Compile>
-    <Compile Include="ThirdParty\Options.cs" />
+    <Compile Include="..\ThirdParty\Options.cs">
+      <Link>ThirdParty\Options.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

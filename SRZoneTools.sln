@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRZoneTool", "SRZoneTool\SR
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChrisLaRosa.SaintsRow.ZoneFile", "ChrisLaRosa.SaintsRow.ZoneFile\ChrisLaRosa.SaintsRow.ZoneFile.csproj", "{BBBAA700-0654-458B-83C6-493819A167AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRZoneFinder", "SRZoneFinder\SRZoneFinder.csproj", "{6E65BDEB-83A0-454D-AFE8-AD8B7C306938}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{BBBAA700-0654-458B-83C6-493819A167AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBBAA700-0654-458B-83C6-493819A167AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBBAA700-0654-458B-83C6-493819A167AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E65BDEB-83A0-454D-AFE8-AD8B7C306938}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E65BDEB-83A0-454D-AFE8-AD8B7C306938}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E65BDEB-83A0-454D-AFE8-AD8B7C306938}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E65BDEB-83A0-454D-AFE8-AD8B7C306938}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
