@@ -10,4 +10,6 @@ Directories in this repository:
 * ChrisLaRosa.SaintsRow.ZoneFile - Zone File Library Project
 * SRReadZone - Zone File Reader Tool Project
 * SRZoneExample - Example Project which uses ChrisLaRosa.SaintsRow.ZoneFile library
+* SRZoneFinder - Zone File Finder Tool Project
 * SRZoneTool - Zone File Converter Tool Project
+* ThirdParty - Third Party files shared by all projects
