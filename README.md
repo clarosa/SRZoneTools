@@ -12,4 +12,4 @@ Directories in this repository:
 * SRZoneExample - Example Project which uses ChrisLaRosa.SaintsRow.ZoneFile library
 * SRZoneFinder - Zone File Finder Tool Project
 * SRZoneTool - Zone File Converter Tool Project
-* ThirdParty - Third Party files shared by all projects
+* ThirdParty - Third Party files shared by the tool projects
