@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Text;
 
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
@@ -24,11 +25,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         /// <param name="s">The value to write.</param>
         public override string ReadString()
         {
-            string s = "";
+            StringBuilder sb = new StringBuilder();
             char c;
             while ((c = ReadChar()) != '\0')
-                s += c;
-            return s;
+                sb.Append(c);
+            return sb.ToString();
         }
 
         /// <summary>
