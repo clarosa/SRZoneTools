@@ -41,6 +41,75 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRBinaryReader.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRBinaryReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRBinaryWriter.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRBinaryWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockBase.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockBase.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockMultiBase.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockMultiBase.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockSingleBase.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockSingleBase.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRRawDataBlock.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRRawDataBlock.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRTrace.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRTrace.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRVFileHeader.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRVFileHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRWorldZoneHeader.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRWorldZoneHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRXmlNodeReader.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRXmlNodeReader.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRXmlNodeWriter.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRXmlNodeWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneCombinedFile.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneCombinedFile.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneDataProperty.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneDataProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFileException.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFileException.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneMeshFileReference.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneMeshFileReference.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObject.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObject.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneProperty.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSection.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSection.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformOrientationProperty.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformOrientationProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\ThirdParty\Options.cs">
+      <Link>ThirdParty\Options.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

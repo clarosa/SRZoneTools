@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mono.Options;
+using ChrisLaRosa.SaintsRow.ZoneFile;
 
 namespace SRZoneFinder
 {
@@ -15,30 +17,15 @@ namespace SRZoneFinder
         static float givenX;
         static float givenZ;
 
-        class SRBinaryReader : BinaryReader
-        {
-            public SRBinaryReader(Stream s) : base(s) { }
-
-            public string ReadStringZ()
-            {
-                string s = "";
-                char c;
-                while ((c = this.ReadChar()) != '\0')
-                    s += c;
-                return s;
-
-            }
-        }
-
         class FilePosition : IComparable<FilePosition>
         {
-            public string Name;
+            public string File;
             public float X, Y, Z;
             public double DistanceSquared;
 
-            public FilePosition(string name, float x, float y, float z)
+            public FilePosition(string file, float x, float y, float z)
             {
-                Name = name;
+                File = file;
                 X = x;
                 Y = y;
                 Z = z;
@@ -63,37 +50,13 @@ namespace SRZoneFinder
 
         static bool GetCoordinates(string czhFile, out float x, out float y, out float z)
         {
-            bool success = true;
-            FileStream headerFileStream = null;
-            try {
-                headerFileStream = new FileStream(czhFile, FileMode.Open, FileAccess.Read);
-                SRBinaryReader binaryReader = new SRBinaryReader(headerFileStream);
-                int signature = binaryReader.ReadInt16();
-                if (signature != 0x3854)
-                    throw new Exception("Incorrect v-file header signature.  Not a valid zone header file.");
-                int version = binaryReader.ReadInt16();
-                if (version != 4)
-                    throw new Exception("Incorrect v-file header version.");
-                int refDataSize = binaryReader.ReadInt32();
-//              binaryReader.BaseStream.Seek(24 + refDataSize, SeekOrigin.Current);
-                int refDataStart = binaryReader.ReadInt32();
-                int refCount = binaryReader.ReadInt32();
-                binaryReader.BaseStream.Seek(16, SeekOrigin.Current);
-                long refDataOffset = binaryReader.BaseStream.Position;
-                for (int i = 1; i <= refCount; i++)
-                    binaryReader.ReadStringZ();
-                binaryReader.BaseStream.Seek((binaryReader.BaseStream.Position | 0x000F) + 1, SeekOrigin.Begin);
-                // World Zone Header
-                string signature2 = new string(binaryReader.ReadChars(4));
-                if (signature2 != "SR3Z")
-                    throw new Exception("Incorrect world zone header signature.");
-                int version2 = binaryReader.ReadInt32();
-                if (version2 != 29 && version2 != 32)  // version 29 = SR3, 32 = SR4
-                    throw new Exception("Incorrect world zone header version.");
-                int v_file_header_ptr = binaryReader.ReadInt32();
-                x = binaryReader.ReadSingle();
-                y = binaryReader.ReadSingle();
-                z = binaryReader.ReadSingle();
+            Boolean success = true;
+            try
+            {
+                SRZoneCombinedFile file = new SRZoneCombinedFile(czhFile);
+                x = file.WorldZoneHeader.FileReferenceOffset.x;
+                y = file.WorldZoneHeader.FileReferenceOffset.y;
+                z = file.WorldZoneHeader.FileReferenceOffset.z;
             }
             catch (Exception e)
             {
@@ -102,17 +65,11 @@ namespace SRZoneFinder
                 x = y = z = 0;
                 success = false;
             }
-            finally
-            {
-                if (headerFileStream != null)
-                    headerFileStream.Close();
-            }
             return success;
         }
 
-        static void ShowHelp(string programName)
+        static void ShowHelp(string programName, OptionSet options)
         {
-            Console.WriteLine();
             Console.WriteLine("Scans a directory and all it's subdirectories for Saints Row Zone Header files");
             Console.WriteLine("(\".czh_pc\") and builds a list of their world coordinates and file names.");
             Console.WriteLine("Then displays the list sorted either by X and Y coordinate (if no reference");
@@ -124,9 +81,12 @@ namespace SRZoneFinder
             Console.WriteLine("  directory   Directory to scan for zone header files.");
             Console.WriteLine("  X           X coordinate of reference point (East/West).");
             Console.WriteLine("  Z           Z coordinate of reference point (North/South).");
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            options.WriteOptionDescriptions(Console.Out);
         }
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
             string svnRevision = "$Revision: 1101 $";
@@ -137,40 +97,78 @@ namespace SRZoneFinder
             Version ver = assemName.Version;
             Console.WriteLine("{0} version {1}.{2}.{3}.{4} by Quantum at saintsrowmods.com",
                               programName, ver.Major, ver.Minor, ver.Build, revision);
+            Console.WriteLine();
 
-            List<FilePosition> files;
+            Boolean showHelp = false;
+            Boolean showFullPath = false;
+            Boolean showHeader = true;
+            int maxNumberLines = 9999;
 
-            if (args.Length <= 0)
+            // See http://tirania.org/blog/archive/2008/Oct-14.html
+            OptionSet options = new OptionSet() {
+                { "b|bare",     "Don't display column headings.", v => showHeader = v == null },
+                { "f|fullpath", "Show the full path with the zone file name.", v => showFullPath = v != null },
+                { "h|?|help",   "Show this message and exit.", v => showHelp = v != null },
+                { "n|number=",  "Print only the first \"n\" files (closest).", v => maxNumberLines = Int32.Parse(v) }
+            };
+
+            try
             {
-                ShowHelp(programName);
-                return;
-            }
-
-            string fileName = args[0];
-            if (args.Length >= 3)
-            {
-                compareDistance = true;
-                givenX = Convert.ToSingle(args[1]);
-                givenZ = Convert.ToSingle(args[2]);
-            }
-
-            string[] paths = Directory.GetFiles(args[0], "*.czh_pc", SearchOption.AllDirectories);
-            files = new List<FilePosition>(paths.Length);
-            foreach (string path in paths)
-            {
-                float x, y, z;
-                if (GetCoordinates(path, out x, out y, out z))
+                List<string> extra;
+                extra = options.Parse(args);
+                if (showHelp || extra.Count <= 0)
                 {
-                    string name = Path.GetFileName(path);
-                    if (x != 0 || y != 0 || z != 0)
-                        files.Add(new FilePosition(name, x, y, z));
+                    ShowHelp(programName, options);
+                    return 1;
+                }
+                string fileName = extra[0];
+
+                if (extra.Count >= 3)
+                {
+                    compareDistance = true;
+                    givenX = Convert.ToSingle(extra[1]);
+                    givenZ = Convert.ToSingle(extra[2]);
+                }
+
+                List<FilePosition> files;
+                string[] paths = Directory.GetFiles(fileName, "*.czh_pc", SearchOption.AllDirectories);
+                files = new List<FilePosition>(paths.Length);
+                foreach (string path in paths)
+                {
+                    float x, y, z;
+                    if (GetCoordinates(path, out x, out y, out z))
+                    {
+                        string file = showFullPath ? path : Path.GetFileName(path);
+                        if (x != 0 || y != 0 || z != 0)
+                            files.Add(new FilePosition(file, x, y, z));
+                    }
+                }
+                files.Sort();
+                int line = 0;
+                if (showHeader)
+                {
+                    Console.WriteLine("    X        Y        Z     Zone Header File {0}", showFullPath ? "Path" : "Name");
+                    Console.WriteLine(" -------  -------  -------  ---------------------");
+                }
+                foreach (FilePosition file in files)
+                {
+                    if (line++ >= maxNumberLines)
+                        break;
+                    Console.WriteLine("{0,8:0.00} {1,8:0.00} {2,8:0.00}  {3}", file.X, file.Y, file.Z, file.File);
                 }
             }
-            files.Sort();
-            foreach (FilePosition file in files)
+            catch (OptionException e)
             {
-                Console.WriteLine("{0,8:0.00} {1,8:0.00} {2,8:0.00}  {3}", file.X, file.Y, file.Z, file.Name);
+                Console.WriteLine("ERROR:  " + e.Message);
+                Console.WriteLine("        Type `" + programName + " --help' for more information.");
+                return 1;
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR:  " + e.Message);
+                return 1;
+            }
+            return 0;
         }
     }
 }

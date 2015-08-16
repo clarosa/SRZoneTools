@@ -55,6 +55,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         Byte zoneType;
         List<SRZoneMeshFileReference> references;
 
+        // PROPERTIES
+
+        public SRTransform FileReferenceOffset { get { return fileReferenceOffset; } }
+        public Byte ZoneType { get { return zoneType; } }
+        public List<SRZoneMeshFileReference> MeshFileReferenceList { get { return references; } }
+
         // LOCAL VARIABLES
 
         private SRVFileHeader vFileHeader;
@@ -88,49 +94,49 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         public void Read(SRBinaryReader binaryReader)
         {
             binaryReader.Align(Alignment);
-            Console.WriteLine("");
-            Console.WriteLine("WORLD ZONE HEADER:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+            SRTrace.WriteLine("");
+            SRTrace.WriteLine("WORLD ZONE HEADER:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
             signature = new string(binaryReader.ReadChars(4));
-            Console.WriteLine("  World Zone Signature:   " + signature);
+            SRTrace.WriteLine("  World Zone Signature:   " + signature);
             if (signature != "SR3Z")
                 throw new SRZoneFileException("Incorrect world zone signature.", binaryReader.BaseStream.Position - 4);
             version = binaryReader.ReadUInt32();
-            Console.WriteLine("  World Zone Version:     {0}", version);
+            SRTrace.WriteLine("  World Zone Version:     {0}", version);
             if (version != 29 && version != 32)  // version 29 = SR3, 32 = SR4
                 throw new SRZoneFileException("Incorrect world zone version.");
             int v_file_header_ptr = binaryReader.ReadInt32();
-            Console.WriteLine("  V-File Header Pointer:  0x{0:X8}", v_file_header_ptr);
+            SRTrace.WriteLine("  V-File Header Pointer:  0x{0:X8}", v_file_header_ptr);
             float x = binaryReader.ReadSingle();
             float y = binaryReader.ReadSingle();
             float z = binaryReader.ReadSingle();
-            Console.WriteLine("  File Reference Offset:  {0}, {1}, {2}", x, y, z);
+            SRTrace.WriteLine("  File Reference Offset:  {0}, {1}, {2}", x, y, z);
             fileReferenceOffset = new SRTransform(x, y, z);
             fileReferencesPtr = binaryReader.ReadUInt32();
-            Console.WriteLine("  WZ File Reference Ptr:  0x{0:X8}", fileReferencesPtr);
+            SRTrace.WriteLine("  WZ File Reference Ptr:  0x{0:X8}", fileReferencesPtr);
             int num_file_references = binaryReader.ReadInt16();
-            Console.WriteLine("  Number of File Refs:    {0}", num_file_references);
+            SRTrace.WriteLine("  Number of File Refs:    {0}", num_file_references);
             zoneType = binaryReader.ReadByte();
             string typeName = (zoneType < WorldZoneTypeNames.Length) ? WorldZoneTypeNames[zoneType] : "unknown";
-            Console.WriteLine("  Zone Type:              {0} ({1})", zoneType, typeName);
+            SRTrace.WriteLine("  Zone Type:              {0} ({1})", zoneType, typeName);
             int unused = binaryReader.ReadByte();
-            Console.WriteLine("  Unused:                 {0}", unused);
+            SRTrace.WriteLine("  Unused:                 {0}", unused);
             if (unused != 0)
                 throw new SRZoneFileException("Expected unused field to be zero.");
             int interiorTriggerPtr = binaryReader.ReadInt32();
-            Console.WriteLine("  Interior Trigger Ptr:   0x{0:X8}  (run-time)", interiorTriggerPtr);
+            SRTrace.WriteLine("  Interior Trigger Ptr:   0x{0:X8}  (run-time)", interiorTriggerPtr);
             if (interiorTriggerPtr != 0)
                 throw new SRZoneFileException("Expected interior trigger pointer to be zero.");
             int numberOfTriggers = binaryReader.ReadInt16();
-            Console.WriteLine("  Number of Triggers:     {0,-10}  (run-time)", numberOfTriggers);
+            SRTrace.WriteLine("  Number of Triggers:     {0,-10}  (run-time)", numberOfTriggers);
             if (numberOfTriggers != 0)
                 throw new SRZoneFileException("Expected number of triggers to be zero.");
             int extraObjects = binaryReader.ReadInt16();
-            Console.WriteLine("  Extra Objects:          {0}", extraObjects);
+            SRTrace.WriteLine("  Extra Objects:          {0}", extraObjects);
             if (extraObjects != 0)
                 throw new SRZoneFileException("Expected extra objects to be zero.");
             binaryReader.BaseStream.Seek(24, SeekOrigin.Current);
-            Console.WriteLine("");
-            Console.WriteLine("  MESH FILE REFERENCES:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+            SRTrace.WriteLine("");
+            SRTrace.WriteLine("  MESH FILE REFERENCES:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
             references = new List<SRZoneMeshFileReference>(num_file_references);
             for (int i = 0; i < num_file_references; i++)
                 references.Add(new SRZoneMeshFileReference(binaryReader, i, vFileHeader));

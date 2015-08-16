@@ -56,6 +56,10 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         private UInt32 unknown;
         private List<string> referenceData;
 
+        // PROPERTIES
+
+        public List<string> ReferenceStringList { get { return referenceData; } }
+
         // LOCAL VARIABLES
 
         private Dictionary<long, string> referenceNamesByReadOffset;
@@ -102,30 +106,30 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         /// <param name="size">Maximum number of bytes to read.</param>
         public void Read(SRBinaryReader binaryReader)
         {
-            Console.WriteLine("");
-            Console.WriteLine("V-FILE HEADER:");
+            SRTrace.WriteLine("");
+            SRTrace.WriteLine("V-FILE HEADER:");
             signature = binaryReader.ReadUInt16();
-            Console.WriteLine("  V-File Signature:      0x{0:X4}", signature);
+            SRTrace.WriteLine("  V-File Signature:      0x{0:X4}", signature);
             if (signature != 0x3854)
                 throw new Exception("Incorrect V-file signature.  Not a valid zone header file.");
             version = binaryReader.ReadUInt16();
-            Console.WriteLine("  V-File Version:        {0}", version);
+            SRTrace.WriteLine("  V-File Version:        {0}", version);
             if (version != 4)
                 throw new Exception("Incorrect V-file version.");
             int refDataSize = binaryReader.ReadInt32();
-            Console.WriteLine("  Reference Data Size:   {0}", refDataSize);
+            SRTrace.WriteLine("  Reference Data Size:   {0}", refDataSize);
             refDataStart = binaryReader.ReadUInt32();
-            Console.WriteLine("  Reference Data Start:  0x{0:X8}", refDataStart);
+            SRTrace.WriteLine("  Reference Data Start:  0x{0:X8}", refDataStart);
 //            if (refDataStart != 0)
 //                throw new SRZoneFileException("Expected reference data start to be zero.");
             int refCount = binaryReader.ReadInt32();
-            Console.WriteLine("  Reference Count:       {0}", refCount);
+            SRTrace.WriteLine("  Reference Count:       {0}", refCount);
             unknown = binaryReader.ReadUInt32();
-            Console.WriteLine("  Unknown:               0x{0:X8}", unknown);
+            SRTrace.WriteLine("  Unknown:               0x{0:X8}", unknown);
             binaryReader.BaseStream.Seek(12, SeekOrigin.Current);
             long refDataOffset = binaryReader.BaseStream.Position;
-            Console.WriteLine("");
-            Console.WriteLine("  REFERENCE DATA:");
+            SRTrace.WriteLine("");
+            SRTrace.WriteLine("  REFERENCE DATA:");
             referenceData = new List<string>(refCount);
             referenceNamesByReadOffset = new Dictionary<long, string>(refCount);
             var positionDataStart = binaryReader.BaseStream.Position;
@@ -133,7 +137,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             {
                 long offset = binaryReader.BaseStream.Position - positionDataStart;
                 string name = binaryReader.ReadString();
-                Console.WriteLine("   {0,3}. {1}", i, name);
+                SRTrace.WriteLine("   {0,3}. {1}", i, name);
                 referenceData.Add(name);
                 referenceNamesByReadOffset.Add(offset, OptionNameReferenceIdentifier ? name : i.ToString());
             }

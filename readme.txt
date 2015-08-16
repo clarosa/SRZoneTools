@@ -36,6 +36,8 @@ PACKAGE VERSION HISTORY
   1.0    [2015-07-29]  First official release.  Updated XML format.
                        Added SRReadZone.html document.
   1.1    [2015-08-12]  Added SRZoneFinder tool.
+  1.2    [2015-08-15]  Added new command line options to SRZoneFinder tool.
+                       Reduced default verbosity in SRZoneTool.
 
 -------------------------------------------------------------------------------
 DISCLAIMER:
