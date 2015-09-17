@@ -54,8 +54,11 @@ namespace SRReadZone
             "Num World Zone Types"
         };
 
+        public static Dictionary<UInt32, string> ReferenceData = null;
+
         public SRZoneHeader(string czhFile, bool normalize)
         {
+            ReferenceData = new Dictionary<UInt32, string>();
             normalizeUnits = normalize;
             ReadFile(czhFile);
         }
@@ -103,7 +106,9 @@ namespace SRReadZone
                 Console.WriteLine("  REFERENCE DATA:");
                 for (int i = 1; i <= refCount; i++)
                 {
+                    uint offset = (uint)(binaryReader.BaseStream.Position - refDataOffset);
                     string name = binaryReader.ReadStringZ();
+                    ReferenceData[offset] = name;
                     Console.WriteLine("   {0,3}. {1}", i, name);
                 }
                 Console.WriteLine("");
@@ -154,12 +159,8 @@ namespace SRReadZone
                     Int16 pitch = binaryReader.ReadInt16();
                     Int16 bank = binaryReader.ReadInt16();
                     Int16 heading = binaryReader.ReadInt16();
-                    int m_str_offset = binaryReader.ReadInt16();
-
-                    long savePosition = binaryReader.BaseStream.Position;
-                    binaryReader.BaseStream.Seek(refDataOffset + m_str_offset, SeekOrigin.Begin);
-                    string name = binaryReader.ReadStringZ();
-                    binaryReader.BaseStream.Seek(savePosition, SeekOrigin.Begin);                 
+                    uint m_str_offset = binaryReader.ReadUInt16();
+                    string name = ReferenceData.ContainsKey(m_str_offset) ? ReferenceData[m_str_offset] : "<invalid>";
                     
                     if (normalizeUnits)
                     {
@@ -226,6 +227,184 @@ namespace SRReadZone
             this.ReadFile(cznFile);
         }
 
+        public void ReadGeometrySection(SRBinaryReader binaryReader, UInt32 cpu_size, long sectionDataStart)
+        {
+            Dictionary<UInt32, string> meshNamesList = new Dictionary<UInt32, string>();
+
+            Console.WriteLine("");
+            Console.WriteLine("  CRUNCHED REFERENCE GEOMETRY:");
+            int num_meshes = binaryReader.ReadInt32();
+            Console.WriteLine("    Number of Meshes:     {0}", num_meshes);
+            int mesh_names_size = binaryReader.ReadInt32();
+            Console.WriteLine("    Mesh Names Size:      {0}", mesh_names_size);
+
+            // binaryReader.BaseStream.Seek(16, SeekOrigin.Current);
+            long refDataOffset = binaryReader.BaseStream.Position;
+            long refDataEnd = refDataOffset + mesh_names_size;
+            Console.WriteLine("");
+            Console.WriteLine("    MESH NAMES LIST:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+            for (int i = 1; binaryReader.BaseStream.Position < refDataEnd; i++)
+            {
+                long position = binaryReader.BaseStream.Position;
+                string name = binaryReader.ReadStringZ();
+                binaryReader.ReadByte();
+                meshNamesList[(UInt32)(position - refDataOffset)] = name;
+                Console.WriteLine("    {0,4}.  {1}", i, name);
+                // Align on a word boundry
+                while ((binaryReader.BaseStream.Position & 0x00000001) != 0)
+                    binaryReader.ReadByte();
+            }
+            if (binaryReader.BaseStream.Position != refDataEnd)
+                throw new Exception("Mesh Names List not expected size.");
+            // Align on a 16-byte boundry
+            while ((binaryReader.BaseStream.Position & 0x0000000F) != 0)
+                binaryReader.ReadByte();
+            Console.WriteLine("");
+            Console.WriteLine("    MESHES LIST:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+            Console.WriteLine("           *r_mesh  *material_map  File Name (from *r_mesh)");
+            Console.WriteLine("           -------  -------------  ------------------------");
+            for (int i = 1; i <= num_meshes; i++)
+            {
+                uint r_mesh_offset = binaryReader.ReadUInt32();
+                uint material_map_offset = binaryReader.ReadUInt32();
+                string name = (SRZoneHeader.ReferenceData != null && SRZoneHeader.ReferenceData.ContainsKey(r_mesh_offset)) ?
+                               SRZoneHeader.ReferenceData[r_mesh_offset] : "<invalid>";
+                Console.WriteLine("    {0,4}. {1,6}       {2,6}      {3}", i, r_mesh_offset, material_map_offset, name);
+            }
+            // Align on a 16 byte boundry
+            while ((binaryReader.BaseStream.Position & 0x0000000F) != 0)
+                binaryReader.ReadByte();
+            Console.WriteLine("");
+            Console.WriteLine("    FAST OBJECTS LIST:");
+            for (int i = 1; i <= num_meshes; i++)
+            {
+                long start = binaryReader.BaseStream.Position;
+                Console.WriteLine("");
+                Console.WriteLine("      FAST OBJECT #{0}:  [file offset 0x{1:X8}]", i, binaryReader.BaseStream.Position);
+                Console.WriteLine("        Object Handle:          0x{0:X16}", binaryReader.ReadUInt64());
+                Console.WriteLine("        m_render_update_next:   0x{0:X8}", binaryReader.ReadUInt32());
+                UInt32 nameOffset = binaryReader.ReadUInt32();
+                Console.WriteLine("        name_offset:            0x{0:X8}", nameOffset);
+                string name = meshNamesList.ContainsKey(nameOffset) ? meshNamesList[nameOffset] : "<invalid>";
+                Console.WriteLine("        Name (from offset):     {0}", name);
+                Console.WriteLine("        Position (x,y,z):       {0}, {1}, {2}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                Console.WriteLine("        Orientation (x,y,z,w):  {0}, {1}, {2}, {3}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                Console.WriteLine("        etc.");
+                binaryReader.BaseStream.Seek(start + 112, SeekOrigin.Begin);
+            }
+            Console.WriteLine("");
+            Console.WriteLine("    MESH VARIANT DATA:  [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+            Console.WriteLine("      ???");
+        }
+
+        public void ReadObjectSection(SRBinaryReader binaryReader, UInt32 cpu_size, long sectionDataStart)
+        {
+            Console.WriteLine("");
+            Console.WriteLine("  OBJECT SECTION HEADER:");
+            int signature = binaryReader.ReadInt32();
+            Console.WriteLine("    Header Signature:     0x{0:X8}", signature);
+            int version = binaryReader.ReadInt32();
+            Console.WriteLine("    Version:              {0}", version);
+            int num_objects = binaryReader.ReadInt32();
+            Console.WriteLine("    Number of Objects:    {0}", num_objects);
+            int num_handles = binaryReader.ReadInt32();
+            Console.WriteLine("    Number of Handles:    {0}", num_handles);
+            int flags = binaryReader.ReadInt32();
+            Console.WriteLine("    Flags:                0x{0:X8}", flags);
+            int handle_list_ptr = binaryReader.ReadInt32();
+            Console.WriteLine("    Handle List Pointer:  0x{0:X8}  (run-time)", handle_list_ptr);
+            int object_data_ptr = binaryReader.ReadInt32();
+            Console.WriteLine("    Object Data Pointer:  0x{0:X8}  (run-time)", object_data_ptr);
+            int object_data_size = binaryReader.ReadInt32();
+            Console.WriteLine("    Object Data Size:     {0,-10}  (run-time)", object_data_size);
+            Console.WriteLine("");
+            Console.WriteLine("    HANDLE LIST:");
+            for (int i = 1; i <= num_handles; i++)
+            {
+                UInt64 handle = binaryReader.ReadUInt64();
+                // if (i > 10 && i < num_handles - 10) continue;
+                Console.WriteLine("     {0,3}. 0x{1:X16}", i, handle);
+            }
+
+            int block = 1;
+            while (block <= num_handles && binaryReader.BaseStream.Position < sectionDataStart + cpu_size)
+            {
+                // Align on a dword boundry
+                while ((binaryReader.BaseStream.Position & 0x00000003) != 0)
+                    binaryReader.ReadByte();
+                if (binaryReader.BaseStream.Position >= sectionDataStart + cpu_size)
+                    break;
+                Console.WriteLine("");
+                Console.WriteLine("    OBJECT #{0}:  [file offset 0x{1:X8}]", block++, binaryReader.BaseStream.Position);
+                UInt64 handle_offset = binaryReader.ReadUInt64();
+                Console.WriteLine("      Handle Offset:         0x{0:X16}", handle_offset);
+                UInt64 parent_handle_offset = binaryReader.ReadUInt64();
+                Console.WriteLine("      Parent Handle Offset:  0x{0:X16}", parent_handle_offset);
+                int object_type_hash = binaryReader.ReadInt32();
+                Console.WriteLine("      Object Type Hash:      0x{0:X8}", object_type_hash);
+                int number_of_properties = binaryReader.ReadInt16();
+                Console.WriteLine("      Number of Properties:  {0}", number_of_properties);
+                int buffer_size = binaryReader.ReadInt16();
+                Console.WriteLine("      Buffer Size:           {0}", buffer_size);
+                UInt16 name_offset = binaryReader.ReadUInt16();
+                Console.WriteLine("      Name Offset:           {0}", name_offset);
+                int padding = binaryReader.ReadInt16();
+                Console.WriteLine("      Padding:               {0}", padding);
+                long savePosition = binaryReader.BaseStream.Position;
+                binaryReader.BaseStream.Seek(name_offset, SeekOrigin.Current);
+                string objectName = binaryReader.ReadStringZ();
+                Console.WriteLine("      Object Name:           " + objectName);
+                binaryReader.BaseStream.Seek(savePosition, SeekOrigin.Begin);
+                for (int i = 1; i <= number_of_properties; i++)
+                {
+                    // Align on a dword boundry
+                    while ((binaryReader.BaseStream.Position & 0x00000003) != 0)
+                        binaryReader.ReadByte();
+                    Console.WriteLine("");
+                    Console.WriteLine("      PROPERTY #{0}:  [file offset 0x{1:X8}]", i, binaryReader.BaseStream.Position);
+                    uint type = binaryReader.ReadUInt16();
+                    string typeName = (type < propertyTypeNames.Length) ? propertyTypeNames[type] : "unknown";
+                    Console.WriteLine("        Type:      {0} ({1})", type, typeName);
+                    int size = binaryReader.ReadInt16();
+                    Console.WriteLine("        Size:      {0} bytes", size);
+                    int name_crc = binaryReader.ReadInt32();
+                    Console.WriteLine("        Name CRC:  0x{0:X8} ({0})", name_crc, name_crc);
+                    long dataBegin = binaryReader.BaseStream.Position;
+                    switch (type)
+                    {
+                        case 0:
+                            Console.WriteLine("        Value:     \"" + binaryReader.ReadStringZ() + "\"");
+                            break;
+                        case 2:
+                            Console.WriteLine("        Value:     Position (x,y,z):  {0}, {1}, {2}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                            break;
+                        case 3:
+                            Console.WriteLine("        Value:     Position (x,y,z):       {0}, {1}, {2}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                            Console.WriteLine("                   Orientation (x,y,z,w):  {0}, {1}, {2}, {3}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
+                            break;
+                        default:
+                            if (size > 16)
+                            {
+                                Console.WriteLine("        Value:     ??? [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
+                            }
+                            else
+                            {
+                                byte[] buffer = new byte[size];
+                                binaryReader.Read(buffer, 0, size);
+                                string hexBuffer = "";
+                                for (int j = 0; j < size; j++)
+                                {
+                                    hexBuffer += buffer[j].ToString("X2") + ' ';
+                                }
+                                Console.WriteLine("        Value:     {1}", i, hexBuffer);
+                            }
+                            break;
+                    }
+                    binaryReader.BaseStream.Seek(dataBegin + size, SeekOrigin.Begin);
+                }
+            }
+        }
+
         public void ReadFile(string cznFile)
         {
             FileStream headerFileStream = null;
@@ -261,111 +440,10 @@ namespace SRReadZone
                         break;
                     }
 
-                    if (binaryReader.ReadInt32() == 0x574F4246)
+                    switch (id)
                     {
-                        Console.WriteLine("");
-                        Console.WriteLine("  OBJECT SECTION HEADER:");
-                        Console.WriteLine("    Header Signature:     0x574F4246");
-                        int version = binaryReader.ReadInt32();
-                        Console.WriteLine("    Version:              {0}", version);
-                        int num_objects = binaryReader.ReadInt32();
-                        Console.WriteLine("    Number of Objects:    {0}", num_objects);
-                        int num_handles = binaryReader.ReadInt32();
-                        Console.WriteLine("    Number of Handles:    {0}", num_handles);
-                        int flags = binaryReader.ReadInt32();
-                        Console.WriteLine("    Flags:                0x{0:X8}", flags);
-                        int handle_list_ptr = binaryReader.ReadInt32();
-                        Console.WriteLine("    Handle List Pointer:  0x{0:X8}  (run-time)", handle_list_ptr);
-                        int object_data_ptr = binaryReader.ReadInt32();
-                        Console.WriteLine("    Object Data Pointer:  0x{0:X8}  (run-time)", object_data_ptr);
-                        int object_data_size = binaryReader.ReadInt32();
-                        Console.WriteLine("    Object Data Size:     {0,-10}  (run-time)", object_data_size);
-                        Console.WriteLine("");
-                        Console.WriteLine("    HANDLE LIST:");
-                        for (int i = 1; i <= num_handles; i++)
-                        {
-                            UInt64 handle = binaryReader.ReadUInt64();
-                            // if (i > 10 && i < num_handles - 10) continue;
-                            Console.WriteLine("     {0,3}. 0x{1:X16}", i, handle);
-                        }
-
-                        int block = 1;
-                        while (block <= num_handles && binaryReader.BaseStream.Position < sectionDataStart + cpu_size)
-                        {
-                            // Align on a dword boundry
-                            while ((binaryReader.BaseStream.Position & 0x00000003) != 0)
-                                binaryReader.ReadByte();
-                            if (binaryReader.BaseStream.Position >= sectionDataStart + cpu_size)
-                                break;
-                            Console.WriteLine("");
-                            Console.WriteLine("    OBJECT #{0}:  [file offset 0x{1:X8}]", block++, binaryReader.BaseStream.Position);
-                            UInt64 handle_offset = binaryReader.ReadUInt64();
-                            Console.WriteLine("      Handle Offset:         0x{0:X16}", handle_offset);
-                            UInt64 parent_handle_offset = binaryReader.ReadUInt64();
-                            Console.WriteLine("      Parent Handle Offset:  0x{0:X16}", parent_handle_offset);
-                            int object_type_hash = binaryReader.ReadInt32();
-                            Console.WriteLine("      Object Type Hash:      0x{0:X8}", object_type_hash);
-                            int number_of_properties = binaryReader.ReadInt16();
-                            Console.WriteLine("      Number of Properties:  {0}", number_of_properties);
-                            int buffer_size = binaryReader.ReadInt16();
-                            Console.WriteLine("      Buffer Size:           {0}", buffer_size);
-                            UInt16 name_offset = binaryReader.ReadUInt16();
-                            Console.WriteLine("      Name Offset:           {0}", name_offset);
-                            int padding = binaryReader.ReadInt16();
-                            Console.WriteLine("      Padding:               {0}", padding);
-                            long savePosition = binaryReader.BaseStream.Position;
-                            binaryReader.BaseStream.Seek(name_offset, SeekOrigin.Current);
-                            string objectName = binaryReader.ReadStringZ();
-                            Console.WriteLine("      Object Name:           " + objectName);
-                            binaryReader.BaseStream.Seek(savePosition, SeekOrigin.Begin);
-                            for (int i = 1; i <= number_of_properties; i++)
-                            {
-                                // Align on a dword boundry
-                                while ((binaryReader.BaseStream.Position & 0x00000003) != 0)
-                                    binaryReader.ReadByte();
-                                Console.WriteLine("");
-                                Console.WriteLine("      PROPERTY #{0}:  [file offset 0x{1:X8}]", i, binaryReader.BaseStream.Position);
-                                uint type = binaryReader.ReadUInt16();
-                                string typeName = (type < propertyTypeNames.Length) ? propertyTypeNames[type] : "unknown";
-                                Console.WriteLine("        Type:      {0} ({1})", type, typeName);
-                                int size = binaryReader.ReadInt16();
-                                Console.WriteLine("        Size:      {0} bytes", size);
-                                int name_crc = binaryReader.ReadInt32();
-                                Console.WriteLine("        Name CRC:  0x{0:X8} ({0})", name_crc, name_crc);
-                                long dataBegin = binaryReader.BaseStream.Position;
-                                switch (type)
-                                {
-                                    case 0:
-                                        Console.WriteLine("        Value:     \"" + binaryReader.ReadStringZ() + "\"");
-                                        break;
-                                    case 2:
-                                        Console.WriteLine("        Value:     Position (x,y,z):  {0}, {1}, {2}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                                        break;
-                                    case 3:
-                                        Console.WriteLine("        Value:     Position (x,y,z):       {0}, {1}, {2}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                                        Console.WriteLine("                   Orientation (x,y,z,w):  {0}, {1}, {2}, {3}", binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle(), binaryReader.ReadSingle());
-                                        break;
-                                    default:
-                                        if (size > 16)
-                                        {
-                                            Console.WriteLine("        Value:     ??? [file offset 0x{0:X8}]", binaryReader.BaseStream.Position);
-                                        }
-                                        else
-                                        {
-                                            byte[] buffer = new byte[size];
-                                            binaryReader.Read(buffer, 0, size);
-                                            string hexBuffer = "";
-                                            for (int j = 0; j < size; j++)
-                                            {
-                                                hexBuffer += buffer[j].ToString("X2") + ' ';
-                                            }
-                                            Console.WriteLine("        Value:     {1}", i, hexBuffer);
-                                        }
-                                        break;
-                                }
-                                binaryReader.BaseStream.Seek(dataBegin + size, SeekOrigin.Begin);
-                            }
-                        }
+                        case 0x2233: ReadGeometrySection(binaryReader, cpu_size, sectionDataStart); break;
+                        case 0x2234: ReadObjectSection(binaryReader, cpu_size, sectionDataStart); break;
                     }
 
                     binaryReader.BaseStream.Seek(sectionDataStart + cpu_size, SeekOrigin.Begin);
@@ -405,7 +483,7 @@ namespace SRReadZone
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1089 $";
+            string svnRevision = "$Revision: 1132 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();

@@ -38,6 +38,9 @@ PACKAGE VERSION HISTORY
   1.1    [2015-08-12]  Added SRZoneFinder tool.
   1.2    [2015-08-15]  Added new command line options to SRZoneFinder tool.
                        Reduced default verbosity in SRZoneTool.
+  1.3    [2015-09-16]  Updated SRReadZone tool to parse zone file section type
+                       0x2233 (crunched reference geometry) up to and including
+                       object coordinates.
 
 -------------------------------------------------------------------------------
 DISCLAIMER:

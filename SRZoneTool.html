@@ -24,6 +24,8 @@ dt:first-child { margin-top: 0 }
 tt:before { content: "<" }
 tt:after { content: ">" }
 
+ul.spaced li { margin-bottom: 1em; }
+
 /* Table with borders and with aestetic cell padding */
 table.border, table.border td, table.border th {
   border: 2px solid black;
@@ -211,5 +213,29 @@ table.directions th:first-child, table.directions td:first-child { text-align: l
   <td>Y-
   <td>Z-
 </table>
+
+<h2>Miscellaneous Observations</h2>
+<h3>Things You Shouldn't Do</h3>
+<ul class="spaced">
+ <li>
+  Do not change the length of any &lt;file&gt; name in the &lt;mesh_file_references&gt; section of the &lt;world_zone_header&gt;.
+  There are, apparently, references to the file offset of these strings in areas of the zone file we can't parse yet.
+  Changing the length of any will break all objects in the zone (usually displaying a red exclamation point placeholder for each broken object).
+ <li>
+  Deleting an &lt;object&gt; can cause the game to crash.
+  Some objects are referenced in other sections of the zone file we can't parse yet.
+  If the object isn't found, the game will crash.
+</ul>
+
+<h3>Property Name CRC's</h3>
+<p>
+ These are some values of the &lt;name_crc&gt; element in the &lt;property&gt; element:
+</p>
+<ul class="spaced">
+ <li><code>0x245EF936</code> - The property value contains a 64 bit number which represents a handle in the &lt;handles&gt; table.
+ <li><code>0x355EF946</code> - The property value contains the name of the object (a string).
+ <li><code>0xA9479BCA</code> - The property value MAY contain a 32-bit index into the World Zone &lt;mesh_file_references&gt; table (base 0).
+</ul>
+
 </body>
 </html>
