@@ -41,6 +41,16 @@ PACKAGE VERSION HISTORY
   1.3    [2015-09-16]  Updated SRReadZone tool to parse zone file section type
                        0x2233 (crunched reference geometry) up to and including
                        object coordinates.
+  2.0    [2015-09-27]  Changes to SRZoneTool XML format (see details below).
+                       Additional XML file validation.
+
+XML CHANGES MADE IN VERSION 2.0
+
+  1.  Enclosed the value part of each <property> in a <value> element.
+  2.  Renamed the following elements:
+      a.  <transform>             to  <position>
+      b.  <handle_offset>         to  <handle>
+      c.  <parent_handle_offset>  to  <parent_handle>
 
 -------------------------------------------------------------------------------
 DISCLAIMER:

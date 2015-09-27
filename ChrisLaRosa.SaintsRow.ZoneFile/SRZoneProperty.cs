@@ -163,7 +163,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     property = Create(type, nameCrc);
 
                 // Read the class-specific data into the derived class
-                property.ReadXmlData(parentNode);
+                property.ReadXmlData(SRXmlNodeReader.GetNode(parentNode, "value"));
 
                 // Read the optional padding data
                 XmlNode paddingNode = reader.GetNodeOptional("padding");
@@ -230,7 +230,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 string typeName = (Type < PropertyTypeNames.Length) ? PropertyTypeNames[Type] : "unknown";
                 writer.Write("type_description", typeName);
                 writer.WriteHex("name_crc", nameCrc);
-                WriteXmlData(writer.Node);
+                WriteXmlData(writer.CreateNode("value"));
                 if (paddingData != null)
                     paddingData.WriteXml(writer.CreateNode("padding"));
             }

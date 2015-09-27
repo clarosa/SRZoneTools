@@ -72,7 +72,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Reading Zone Header file";
+                e.Data["Action"] = "reading Zone Header file";
                 throw;
             }
             finally
@@ -102,7 +102,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Writing Zone Header file";
+                e.Data["Action"] = "writing Zone Header file";
                 throw;
             }
             finally
@@ -135,7 +135,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Reading Zone Data file";
+                e.Data["Action"] = "reading Zone Data file";
                 throw;
             }
             finally
@@ -166,7 +166,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Writing Zone Data file";
+                e.Data["Action"] = "writing Zone Data file";
                 throw;
             }
             finally
@@ -207,7 +207,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Reading XML file";
+                e.Data["Action"] = "reading XML file";
                 throw;
             }
         }
@@ -255,7 +255,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             catch (Exception e)
             {
                 // Add context information for the error message
-                e.Data["Action"] = "Writing XML file";
+                e.Data["Action"] = "writing XML file";
                 throw;
             }
         }

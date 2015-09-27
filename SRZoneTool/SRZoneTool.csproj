@@ -56,6 +56,12 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockSingleBase.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRDataBlockSingleBase.cs</Link>
     </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRPosition.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRPosition.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRQuaternionOrientation.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRQuaternionOrientation.cs</Link>
+    </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRRawDataBlock.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRRawDataBlock.cs</Link>
     </Compile>

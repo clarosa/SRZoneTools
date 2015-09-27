@@ -149,10 +149,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                         if (propertyList[i].Type == SRZoneProperty.StringType)
                             newNameOffset = (UInt16)(binaryWriter.BaseStream.Position - startPosition + SRZoneProperty.DataOffset);
                         else
-                            throw new SRZoneFileException("Name does not reference a string property.");
+                            throw new SRZoneFileException("Object name references a non-string property.");
                     }
                     propertyList[i].Write(binaryWriter, i);
                 }
+                if (name != null && newNameOffset == 0)
+                    throw new SRZoneFileException("Object name does not match a string property.");
                 binaryWriter.Align(SRZoneProperty.Alignment);       // Align for buffer size calculation
                 UInt16 newBufferSize = (UInt16)(binaryWriter.BaseStream.Position - startPosition);
 
@@ -183,8 +185,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 SRXmlNodeReader reader = new SRXmlNodeReader(thisNode);
                 name = reader.ReadString("name");
                 if (name == "") name = null;
-                handleOffset = reader.ReadUInt64("handle_offset");
-                parentHandleOffset = reader.ReadUInt64("parent_handle_offset");
+                handleOffset = reader.ReadUInt64("handle");
+                parentHandleOffset = reader.ReadUInt64("parent_handle");
                 objectTypeHash = reader.ReadInt32("object_type_hash");
                 padding = reader.ReadUInt16("padding");
                 XmlNodeList propertyNodes = reader.Node.SelectNodes("./properties/" + SRZoneProperty.XmlTagName);
@@ -213,8 +215,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
 
                 writer.Write("name", name != null ? name : "");
-                writer.WriteHex("handle_offset", handleOffset);
-                writer.WriteHex("parent_handle_offset", parentHandleOffset);
+                writer.WriteHex("handle", handleOffset);
+                writer.WriteHex("parent_handle", parentHandleOffset);
                 writer.WriteHex("object_type_hash", objectTypeHash);
                 writer.Write("padding", padding);
 

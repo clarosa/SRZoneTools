@@ -15,23 +15,6 @@ using System.Xml;
 
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
-    public class SRTransform
-    {
-        public float x, y, z;
-
-        public SRTransform(float x = 0, float y = 0, float z = 0)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        public override string ToString()
-        {
-            return String.Format("({0}, {1}, {2})", x, y, z);
-        }
-    }
-
     /// <summary>
     /// Object property value which represents a transform.
     /// </summary>
@@ -39,19 +22,19 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     {
         // FIELD VALUES
 
-        protected SRTransform transform;
+        protected SRPosition position;
 
         // PROPERTIES
 
         public override UInt16 Type { get { return TransformType; } }
-        public SRTransform Transform { get { return transform; } }      // Callers can set individual member variables
+        public SRPosition Position { get { return position; } }      // Callers can set individual member variables
 
         // CONSTRUCTORS
 
-        public SRZoneTransformProperty(Int32 nameCrc, SRTransform transform = null)
+        public SRZoneTransformProperty(Int32 nameCrc, SRPosition position = null)
         {
             this.nameCrc = nameCrc;
-            this.transform = transform != null ? transform : new SRTransform();
+            this.position = position != null ? position : new SRPosition();
         }
 
         // PROTECTED READERS / WRITERS
@@ -59,11 +42,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadData(SRBinaryReader binaryReader, int size)
         {
-            transform = new SRTransform();
-            transform.x = binaryReader.ReadSingle();
-            transform.y = binaryReader.ReadSingle();
-            transform.z = binaryReader.ReadSingle();
-            SRTrace.WriteLine("        Value:     Position (x,y,z):  " + transform.ToString());
+            position = new SRPosition(binaryReader);
+            SRTrace.WriteLine("        Value:     Position (x,y,z):  " + position.ToString());
             if (size != 12)
                 throw new SRZoneFileException("Transform length is wrong.");
         }
@@ -71,35 +51,26 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteData(SRBinaryWriter binaryWriter)
         {
-            binaryWriter.Write(transform.x);
-            binaryWriter.Write(transform.y);
-            binaryWriter.Write(transform.z);
+            position.Write(binaryWriter);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadXmlData(XmlNode parentNode)
         {
-            SRXmlNodeReader reader = new SRXmlNodeReader(parentNode, "transform");
-            transform = new SRTransform();
-            transform.x = reader.ReadSingle("x");
-            transform.y = reader.ReadSingle("y");
-            transform.z = reader.ReadSingle("z");
+            position = new SRPosition(parentNode);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteXmlData(XmlNode parentNode)
         {
-            SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, "transform");
-            writer.Write("x", transform.x);
-            writer.Write("y", transform.y);
-            writer.Write("z", transform.z);
+            position.WriteXml(parentNode);
         }
 
         // SYSTEM OBJECT OVERRIDES
 
         public override string ToString()
         {
-            return transform.ToString();
+            return position.ToString();
         }
     }
 }

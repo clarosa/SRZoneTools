@@ -49,6 +49,8 @@
     <Compile Include="SRDataBlockBase.cs" />
     <Compile Include="SRDataBlockMultiBase.cs" />
     <Compile Include="SRDataBlockSingleBase.cs" />
+    <Compile Include="SRPosition.cs" />
+    <Compile Include="SRQuaternionOrientation.cs" />
     <Compile Include="SRRawDataBlock.cs" />
     <Compile Include="SRTrace.cs" />
     <Compile Include="SRVFileHeader.cs" />
