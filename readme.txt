@@ -43,6 +43,7 @@ PACKAGE VERSION HISTORY
                        object coordinates.
   2.0    [2015-09-27]  Changes to SRZoneTool XML format (see details below).
                        Additional XML file validation.
+  2.1    [2016-10-17]  Added "--position" and "--type" options to SRZoneTool.
 
 XML CHANGES MADE IN VERSION 2.0
 
