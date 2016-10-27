@@ -1,5 +1,5 @@
 SRZoneTools - Saints Row Zone File Tools
-Copyright (c) 2015 by Christopher LaRosa
+Copyright (c) 2015-2016 by Christopher LaRosa
 All rights reserved.
 
 You may redistribute the source code or compiled binaries as long as you meet

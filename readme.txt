@@ -25,6 +25,9 @@ TOOLS
                       Type the command with no parameters to display a usage
                       message.
 
+  SRPatchFile.exe     Writes one or more bytes to specific locations in an
+                      existing file.  Great for scripting!
+
 PACKAGE VERSION HISTORY
 
   0.1    [2015-07-08]  Initial release of SRReadZone tool.
@@ -43,7 +46,8 @@ PACKAGE VERSION HISTORY
                        object coordinates.
   2.0    [2015-09-27]  Changes to SRZoneTool XML format (see details below).
                        Additional XML file validation.
-  2.1    [2016-10-17]  Added "--position" and "--type" options to SRZoneTool.
+  2.1    [2016-10-17]  Added "--position" and "--type" options to SRReadZone.
+  2.2    [2016-10-26]  Added SRPatchFile tool.
 
 XML CHANGES MADE IN VERSION 2.0
 
