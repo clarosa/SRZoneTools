@@ -226,9 +226,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             try
             {
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
+                if (Type < PropertyTypeNames.Length)
+                    writer.WriteComment(PropertyTypeNames[Type]);
                 writer.Write("type", Type);
-                string typeName = (Type < PropertyTypeNames.Length) ? PropertyTypeNames[Type] : "unknown";
-                writer.Write("type_description", typeName);
+                // string typeName = (Type < PropertyTypeNames.Length) ? PropertyTypeNames[Type] : "unknown";
+                // writer.Write("type_description", typeName);
                 writer.WriteHex("name_crc", nameCrc);
                 WriteXmlData(writer.CreateNode("value"));
                 if (paddingData != null)

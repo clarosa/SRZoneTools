@@ -26,33 +26,6 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         public const int Alignment = 4;                 // Align on a dword boundry
 
-        public static readonly Dictionary<UInt32, string> SectionTypes = new Dictionary<UInt32, string>()
-        {
-            { 0x2233, "crunched reference geometry - transforms and things for level meshes" },
-            { 0x2234, "objects - nav points, environmental effects, and many, many more things" },
-            { 0x2235, "navmesh" },
-            { 0x2236, "traffic data" },
-            { 0x2237, "world editor generated geometry - things directly made from the editor like terrain" },
-            { 0x2238, "sidewalk data" },
-            { 0x2239, "section trailer (??)" },
-            { 0x2240, "light clip meshes" },
-            { 0x2241, "traffic signal data" },
-            { 0x2242, "mover constraint data" },
-            { 0x2243, "zone triggers(interiors, missions)" },
-            { 0x2244, "heightmap" },
-            { 0x2245, "cobject rbb tree - cobjects are things that are not a full on object like tables and chairs" },
-            { 0x2246, "undergrowth - foliage" },
-            { 0x2247, "water volumes" },
-            { 0x2248, "wave killers" },
-            { 0x2249, "water surfaces" },
-            { 0x2250, "parking data" },
-            { 0x2251, "rain killers" },
-            { 0x2252, "level mesh supplemental lod data" },
-            { 0x2253, "cobject grid data - object fading" },
-            { 0x2254, "ae rbb (??)" },
-            { 0x2255, "havok pathfinding data(SR4 only?)" }
-        };
-
         // OPTIONS
 
         public static bool OptionParseObjects = true;      // Parse objects when reading zone files
@@ -96,12 +69,12 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         public bool HasDescription()
         {
-            return SectionTypes.ContainsKey(SectionType());
+            return SRZoneSectionIdentifiers.SectionTypes.ContainsKey(SectionType());
         }
 
         public string Description()
         {
-            return HasDescription() ? SectionTypes[SectionType()] : "";
+            return HasDescription() ? SRZoneSectionIdentifiers.SectionTypes[SectionType()] : "";
         }
 
         public bool HasGPUData()
@@ -228,9 +201,9 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             {
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
 
-                writer.WriteHex("id", sectionID);
                 if (HasDescription())
-                    writer.Write("description", Description());
+                    writer.WriteComment(Description());
+                writer.WriteHex("id", sectionID);
                 if (HasGPUData())
                     writer.Write("gpu_size", gpuSize);
                 if (cpuData != null)

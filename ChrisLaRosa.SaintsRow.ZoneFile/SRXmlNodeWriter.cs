@@ -55,6 +55,18 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             return CreateNode(parentNode, name, index);
         }
 
+        public static XmlNode CreateComment(XmlNode parentNode, string text)
+        {
+            XmlComment newComment = parentNode.OwnerDocument.CreateComment(" " + text + " ");
+            parentNode.AppendChild(newComment);
+            return newComment;
+        }
+
+        public XmlNode CreateComment(string text)
+        {
+            return CreateComment(parentNode, text);
+        }
+
         public void Write(string name, string value, int index = 0)
         {
             XmlNode node = CreateNode(name, index);
@@ -130,6 +142,11 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         public void WriteHex(string name, UInt64 value, int index = 0)
         {
             Write(name, String.Format("0x{0:X16}", value), index);
+        }
+
+        public void WriteComment(string text)
+        {
+            CreateComment(text);
         }
     }
 }

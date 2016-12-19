@@ -41,6 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs</Link>
+    </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs</Link>
     </Compile>

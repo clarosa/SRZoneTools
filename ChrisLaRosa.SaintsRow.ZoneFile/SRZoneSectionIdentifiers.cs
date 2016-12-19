@@ -15,9 +15,23 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         public string name;
         public string description;
 
-        public NameDescription(string n, string d) {
+        public NameDescription(string n, string d = "")
+        {
             name = n;
             description = d;
+        }
+
+        public override string ToString()
+        {
+            if (String.IsNullOrEmpty(description))
+                return name;
+            else
+                return name + " - " + description;
+        }
+
+        public static implicit operator string(NameDescription nd)
+        {
+            return nd.ToString();
         }
     };
 
@@ -35,7 +49,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             { 0x2236, new NameDescription("Traffic",                "Traffic data for the zone") },
             { 0x2237, new NameDescription("World Editor geometry",  "Editor created geometry (patches, roads, path deform meshes)") },
             { 0x2238, new NameDescription("Sidewalks",              "Sidewalk data for the zone") },
-            { 0x2239, new NameDescription("Trailer",                "???") },
+            { 0x2239, new NameDescription("Trailer",                "" ) },
             { 0x2240, new NameDescription("Light clip meshes",      "Light clip mesh data") },
             { 0x2241, new NameDescription("Traffic signals",        "Traffic signal data") },
             { 0x2242, new NameDescription("Mover constraints",      "Constraints for movers in the zone") },

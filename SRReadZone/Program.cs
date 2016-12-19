@@ -364,8 +364,11 @@ namespace SRReadZone
                 binaryReader.WriteLine1("      Handle Offset:         0x{0:X16}", handle_offset);
                 UInt64 parent_handle_offset = binaryReader.ReadUInt64();
                 binaryReader.WriteLine1("      Parent Handle Offset:  0x{0:X16}", parent_handle_offset);
-                Int32 object_type_hash = binaryReader.ReadInt32();
-                binaryReader.WriteLine1("      Object Type Hash:      0x{0:X8}", object_type_hash);
+                UInt32 object_type_hash = binaryReader.ReadUInt32();
+                if (SRZoneObjectTypes.hasName(object_type_hash))
+                    binaryReader.WriteLine1("      Object Type:           0x{0:X8} ({1})", object_type_hash, SRZoneObjectTypes.Name(object_type_hash));
+                else
+                    binaryReader.WriteLine1("      Object Type (Hash):    0x{0:X8}", object_type_hash);
                 Int16 number_of_properties = binaryReader.ReadInt16();
                 binaryReader.WriteLine1("      Number of Properties:  {0}", number_of_properties);
                 Int16 buffer_size = binaryReader.ReadInt16();
@@ -510,7 +513,7 @@ namespace SRReadZone
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1235 $";
+            string svnRevision = "$Revision: 1257 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();

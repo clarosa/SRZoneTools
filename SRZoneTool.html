@@ -234,6 +234,10 @@ table.directions th:first-child, table.directions td:first-child { text-align: l
 <ul class="spaced">
  <li><code>0x245EF936</code> - The property value contains a 64 bit number which represents a handle in the &lt;handles&gt; table.
  <li><code>0x355EF946</code> - The property value contains the name of the object (a string).
+ <li><code>0x5BD211D6</code> - The property value contains the name of an effect.
+                               The effect name usually begins with "vfx_" (upper or lower case).
+                               The effect name can be found in the "effects.xtbl" file.
+                               There will also be a corresponding "&lt;vfx_name&gt;.str2_pc" file that contains the code for the effect.
  <li><code>0xA9479BCA</code> - The property value MAY contain a 32-bit index into the World Zone &lt;mesh_file_references&gt; table (base 0).
 </ul>
 

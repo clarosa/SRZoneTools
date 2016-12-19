@@ -32,7 +32,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         private UInt64 handleOffset = 0;
         private UInt64 parentHandleOffset = 0;
-        private Int32 objectTypeHash = 0;
+        private UInt32 objectTypeHash = 0;
         private UInt16 padding = 0;
         private string name = null;                     // Calculated name
         private List<SRZoneProperty> propertyList;
@@ -41,7 +41,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         public UInt64 HandleOffset { get { return handleOffset; } }
         public UInt64 ParentHandleOffset { get { return parentHandleOffset; } }
-        public Int32 ObjectTypeHash { get { return objectTypeHash; } }
+        public UInt32 ObjectTypeHash { get { return objectTypeHash; } }
         public string Name { get { return name; } }
         public List<SRZoneProperty> PropertyList { get { return propertyList; } }
 
@@ -79,7 +79,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 SRTrace.WriteLine("      Handle Offset:         0x{0:X16}", handleOffset);
                 parentHandleOffset = binaryReader.ReadUInt64();
                 SRTrace.WriteLine("      Parent Handle Offset:  0x{0:X16}", parentHandleOffset);
-                objectTypeHash = binaryReader.ReadInt32();
+                objectTypeHash = binaryReader.ReadUInt32();
                 SRTrace.WriteLine("      Object Type Hash:      0x{0:X8}", objectTypeHash);
                 var propertyCount = binaryReader.ReadUInt16();
                 SRTrace.WriteLine("      Number of Properties:  {0}", propertyCount);
@@ -187,7 +187,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 if (name == "") name = null;
                 handleOffset = reader.ReadUInt64("handle");
                 parentHandleOffset = reader.ReadUInt64("parent_handle");
-                objectTypeHash = reader.ReadInt32("object_type_hash");
+                objectTypeHash = reader.ReadUInt32("object_type_hash");
                 padding = reader.ReadUInt16("padding");
                 XmlNodeList propertyNodes = reader.Node.SelectNodes("./properties/" + SRZoneProperty.XmlTagName);
                 propertyList = new List<SRZoneProperty>(propertyNodes.Count);
@@ -214,6 +214,8 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
             {
                 SRXmlNodeWriter writer = new SRXmlNodeWriter(parentNode, XmlTagName, index + 1);
 
+                if (SRZoneObjectTypes.hasName(objectTypeHash))
+                    writer.WriteComment(SRZoneObjectTypes.Name(objectTypeHash));
                 writer.Write("name", name != null ? name : "");
                 writer.WriteHex("handle", handleOffset);
                 writer.WriteHex("parent_handle", parentHandleOffset);

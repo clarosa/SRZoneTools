@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SRZoneObjectTypes.cs" />
     <Compile Include="SRZoneSectionIdentifiers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SRBinaryReader.cs" />

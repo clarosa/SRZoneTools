@@ -48,6 +48,8 @@ PACKAGE VERSION HISTORY
                        Additional XML file validation.
   2.1    [2016-10-17]  Added "--position" and "--type" options to SRReadZone.
   2.2    [2016-10-26]  Added SRPatchFile tool.
+  2.3    [2016-12-18]  Added object type names in SRReadZone and ZRZoneTool.
+                       Changed all <description> elements to XML comments.
 
 XML CHANGES MADE IN VERSION 2.0
 

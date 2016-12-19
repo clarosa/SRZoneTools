@@ -98,11 +98,17 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs</Link>
     </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs</Link>
+    </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneProperty.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneProperty.cs</Link>
     </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSection.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSection.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs</Link>
     </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs</Link>
