@@ -50,6 +50,8 @@ PACKAGE VERSION HISTORY
   2.2    [2016-10-26]  Added SRPatchFile tool.
   2.3    [2016-12-18]  Added object type names in SRReadZone and ZRZoneTool.
                        Changed all <description> elements to XML comments.
+  2.4    [2017-04-25]  Added "audio_emitter" object type name in SRReadZone
+                       and ZRZoneTool.
 
 XML CHANGES MADE IN VERSION 2.0
 

@@ -20,7 +20,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         {
             { 0x252BD154, "script_mover" },
             { 0x445C1F3D, "navpoint" },
-            // { 0x454D826F, "???" },
+            { 0x454D826F, "audio_emitter" },
             // { 0x71DDAD68, "???" },
             { 0x7AD3AD35, "script_group" },
             { 0x97335A0B, "script_vehicle" },

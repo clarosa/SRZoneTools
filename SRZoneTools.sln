@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRZoneFinder", "SRZoneFinde
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRPatchFile", "SRPatchFile\SRPatchFile.csproj", "{3A41D0B2-4CAC-410B-AAF3-13AC5E3C78E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SRBuildDictionary", "SRBuildDictionary\SRBuildDictionary.csproj", "{A9A0C397-7C60-4CC6-84FB-30DAD41B6BE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{3A41D0B2-4CAC-410B-AAF3-13AC5E3C78E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A41D0B2-4CAC-410B-AAF3-13AC5E3C78E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A41D0B2-4CAC-410B-AAF3-13AC5E3C78E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9A0C397-7C60-4CC6-84FB-30DAD41B6BE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9A0C397-7C60-4CC6-84FB-30DAD41B6BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9A0C397-7C60-4CC6-84FB-30DAD41B6BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9A0C397-7C60-4CC6-84FB-30DAD41B6BE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

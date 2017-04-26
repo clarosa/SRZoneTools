@@ -22,12 +22,14 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         static void ShowHelp(string programName, OptionSet options)
         {
             Console.WriteLine();
-            Console.WriteLine("Converts a zone file or zone header file to and from XML format.");
-            Console.WriteLine("Supports Saints Row: The Third and Saints Row IV.");
+            Console.WriteLine("Converts zone files to and from XML format.  Supports Saints Row: The Third and Saints Row IV.");
             Console.WriteLine();
-            Console.WriteLine("Usage: " + programName + " filename [OPTIONS]+");
+            Console.WriteLine("To convert a zone header and zone file pair to a single XML file:");
+            Console.WriteLine("  " + programName + " filename.czh_pc filename.czn_pc -o filename.xml [OPTIONS]+");
             Console.WriteLine();
-            Console.WriteLine("  filename     input file (\".czn_pc\", \".czh_pc\", or \".xml\")");
+            Console.WriteLine("To convert your edited XML file back to a zone header and zone file pair:");
+            Console.WriteLine("  " + programName + " filename.xml -o filename.czh_pc [OPTIONS]+");
+            Console.WriteLine("  " + programName + " filename.xml -o filename.czn_pc [OPTIONS]+");
             Console.WriteLine();
             Console.WriteLine("Options:");
             options.WriteOptionDescriptions(Console.Out);
@@ -48,7 +50,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1101 $";
+            string svnRevision = "$Revision: 1265 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();
