@@ -52,6 +52,9 @@ PACKAGE VERSION HISTORY
                        Changed all <description> elements to XML comments.
   2.4    [2017-04-25]  Added "audio_emitter" object type name in SRReadZone
                        and ZRZoneTool.
+  2.5    [2017-05-01]  Added the complete (?) list of object type names to
+                       SRReadZone and ZRZoneTool, contributed by Minimaul at
+                       saintsrowmods.com.
 
 XML CHANGES MADE IN VERSION 2.0
 

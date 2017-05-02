@@ -1,5 +1,5 @@
 SRZoneTools - Saints Row Zone File Tools
-Copyright (c) 2015-2016 by Christopher LaRosa.  All rights reserved.
+Copyright (c) 2015-2017 by Christopher LaRosa.  All rights reserved.
 
 Supports Saints Row: The Third and Saints Row IV.
 
@@ -15,4 +15,4 @@ https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/
 Code in any ThirdParty directories is not written by me.
 For information on those files, read the copyright information in the files.
 
-All other code is copyright 2015-2016 by Christopher LaRosa.
+All other code is copyright 2015-2017 by Christopher LaRosa.
