@@ -101,7 +101,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     propertyList.Add(property);
                     if (position == namePosition)
                     {
-                        if (property is SRZoneStringProperty)
+                        if (property is SRZonePropertyString)
                             name = property.ToString();
                         else if (property.Type == SRZoneProperty.StringType)
                             name = (i + 1).ToString();
@@ -144,7 +144,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 for (int i = 0; i < propertyList.Count; i++)
                 {
                     binaryWriter.Align(SRZoneProperty.Alignment);
-                    if (name != null && newNameOffset == 0 && (propertyList[i] is SRZoneStringProperty && propertyList[i].NameCrc == 0x355EF946 && propertyList[i].ToString() == name || (i + 1).ToString() == name))
+                    if (name != null && newNameOffset == 0 && (propertyList[i] is SRZonePropertyString && propertyList[i].NameCrc == 0x355EF946 && propertyList[i].ToString() == name || (i + 1).ToString() == name))
                     {
                         if (propertyList[i].Type == SRZoneProperty.StringType)
                             newNameOffset = (UInt16)(binaryWriter.BaseStream.Position - startPosition + SRZoneProperty.DataOffset);

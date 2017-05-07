@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015 Christopher LaRosa
+// Copyright (C) 2015-2017 Christopher LaRosa
 //
 // Based on Saints Row: The Third zone file format info and discussion here:
 // https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/
@@ -29,6 +29,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // OPTIONS
 
         public static bool OptionParseObjects = true;      // Parse objects when reading zone files
+        public static bool OptionParseFastObjects = true;  // Parse fast objects when reading zone files
 
         // FIELD VALUES
 
@@ -42,21 +43,28 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         public UInt32 GpuSize { get { return gpuSize; } }
         public SRDataBlockSingleBase CpuData { get { return cpuData; } }
 
+        // LOCAL VARIABLES
+
+        private SRVFileHeader vFileHeader = null;
+
         // CONSTRUCTORS
 
-        public SRZoneSection()
+        public SRZoneSection(SRVFileHeader vFileHeader)
         {
+            this.vFileHeader = vFileHeader;
             sectionID = 0;
             gpuSize = 0;
         }
 
-        public SRZoneSection(SRBinaryReader binaryReader, int index)
+        public SRZoneSection(SRVFileHeader vFileHeader, SRBinaryReader binaryReader, int index)
         {
+            this.vFileHeader = vFileHeader;
             Read(binaryReader, index);
         }
 
-        public SRZoneSection(XmlNode parentNode, int index)
+        public SRZoneSection(SRVFileHeader vFileHeader, XmlNode parentNode, int index)
         {
+            this.vFileHeader = vFileHeader;
             ReadXml(parentNode, index);
         }
 
@@ -112,8 +120,10 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 }
                 if (cpuSize == 0)
                     cpuData = null;
+                else if (OptionParseFastObjects && SectionType() == 0x2233)
+                    cpuData = new SRZoneSectionDataCrunchedGeometry(vFileHeader, binaryReader, (int)cpuSize);
                 else if (OptionParseObjects && SectionType() == 0x2234)
-                    cpuData = new SRZoneObjectSectionCpuData(binaryReader, (int)cpuSize);
+                    cpuData = new SRZoneSectionDataObjects(binaryReader, (int)cpuSize);
                 else
                     cpuData = new SRRawDataBlock(binaryReader, (int)cpuSize);
             }
@@ -178,8 +188,10 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                     cpuData = null;
                 else if (SRRawDataBlock.HasRawXmlData(cpuDataNode))
                     cpuData = new SRRawDataBlock(cpuDataNode);
+                else if (SectionType() == 0x2233)
+                    cpuData = new SRZoneSectionDataCrunchedGeometry(vFileHeader, cpuDataNode);
                 else
-                    cpuData = new SRZoneObjectSectionCpuData(cpuDataNode);
+                    cpuData = new SRZoneSectionDataObjects(cpuDataNode);
             }
             catch (Exception e)
             {

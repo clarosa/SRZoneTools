@@ -18,23 +18,23 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// <summary>
     /// Object property value which represents a transform.
     /// </summary>
-    class SRZoneTransformOrientationProperty : SRZoneTransformProperty
+    class SRZonePropertyTransform : SRZoneProperty
     {
         // FIELD VALUES
 
-        protected SRQuaternionOrientation orientation;
+        protected SRPosition position;
 
         // PROPERTIES
 
-        public override UInt16 Type { get { return TransformOrientationType; } }
-        public SRQuaternionOrientation Orientation { get { return orientation; } }        // Callers can set individual member variables
+        public override UInt16 Type { get { return TransformType; } }
+        public SRPosition Position { get { return position; } }      // Callers can set individual member variables
 
         // CONSTRUCTORS
 
-        public SRZoneTransformOrientationProperty(Int32 nameCrc, SRPosition position = null, SRQuaternionOrientation orientation = null)
-            : base(nameCrc, position)
+        public SRZonePropertyTransform(Int32 nameCrc, SRPosition position = null)
         {
-            this.orientation = orientation != null ? orientation : new SRQuaternionOrientation();
+            this.nameCrc = nameCrc;
+            this.position = position != null ? position : new SRPosition();
         }
 
         // PROTECTED READERS / WRITERS
@@ -42,39 +42,35 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadData(SRBinaryReader binaryReader, int size)
         {
-            base.ReadData(binaryReader, 12);    // Read the position part
-            orientation = new SRQuaternionOrientation(binaryReader);
-            SRTrace.WriteLine("                   Orientation (x,y,z,w):  " + orientation.ToString());
-            if (size != 28)
-                throw new SRZoneFileException("Transform/Orientation length is wrong.");
+            position = new SRPosition(binaryReader);
+            SRTrace.WriteLine("        Value:     Position (x,y,z):  " + position.ToString());
+            if (size != 12)
+                throw new SRZoneFileException("Transform length is wrong.");
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteData(SRBinaryWriter binaryWriter)
         {
-            base.WriteData(binaryWriter);       // Write the position part
-            orientation.Write(binaryWriter);
+            position.Write(binaryWriter);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadXmlData(XmlNode parentNode)
         {
-            base.ReadXmlData(parentNode);          // Read the position part
-            orientation = new SRQuaternionOrientation(parentNode);
+            position = new SRPosition(parentNode);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteXmlData(XmlNode parentNode)
         {
-            base.WriteXmlData(parentNode);         // Write the position part
-            orientation.WriteXml(parentNode);
+            position.WriteXml(parentNode);
         }
 
         // SYSTEM OBJECT OVERRIDES
 
         public override string ToString()
         {
-            return position.ToString() + ", " + orientation.ToString();
+            return position.ToString();
         }
     }
 }

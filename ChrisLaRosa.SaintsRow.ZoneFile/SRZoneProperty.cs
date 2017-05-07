@@ -72,19 +72,19 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 switch (type)
                 {
                     case StringType:
-                        property = new SRZoneStringProperty(nameCrc); break;
+                        property = new SRZonePropertyString(nameCrc); break;
                     case DataType:
-                        property = new SRZoneDataProperty(type, nameCrc); break;
+                        property = new SRZonePropertyRawData(type, nameCrc); break;
                     case TransformType:
-                        property = new SRZoneTransformProperty(nameCrc); break;
+                        property = new SRZonePropertyTransform(nameCrc); break;
                     case TransformOrientationType:
-                        property = new SRZoneTransformOrientationProperty(nameCrc); break;
+                        property = new SRZonePropertyTransformOrientation(nameCrc); break;
                     default:
                         throw new SRZoneFileException("Unknown property type (" + type.ToString() + ").");
                 }
             }
             else
-                property = new SRZoneDataProperty(type, nameCrc);
+                property = new SRZonePropertyRawData(type, nameCrc);
             return property;
         }
 
@@ -158,7 +158,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
                 // Create the appropriate derived class based on the header information
                 if (SRRawDataBlock.HasRawXmlData(parentNode))
-                    property = new SRZoneDataProperty(type, nameCrc);
+                    property = new SRZonePropertyRawData(type, nameCrc);
                 else
                     property = Create(type, nameCrc);
 

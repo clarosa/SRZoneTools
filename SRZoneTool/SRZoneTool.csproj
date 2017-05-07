@@ -83,8 +83,11 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneCombinedFile.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneCombinedFile.cs</Link>
     </Compile>
-    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneDataProperty.cs">
-      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneDataProperty.cs</Link>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFastObject.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFastObject.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyRawData.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyRawData.cs</Link>
     </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFileException.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneFileException.cs</Link>
@@ -95,8 +98,11 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObject.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObject.cs</Link>
     </Compile>
-    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs">
-      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectSectionCpuData.cs</Link>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionDataCrunchedGeometry.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionDataCrunchedGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionDataObjects.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionDataObjects.cs</Link>
     </Compile>
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneObjectTypes.cs</Link>
@@ -110,14 +116,14 @@
     <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs">
       <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneSectionIdentifiers.cs</Link>
     </Compile>
-    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs">
-      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneStringProperty.cs</Link>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyString.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyString.cs</Link>
     </Compile>
-    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformOrientationProperty.cs">
-      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformOrientationProperty.cs</Link>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyTransformOrientation.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyTransformOrientation.cs</Link>
     </Compile>
-    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs">
-      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZoneTransformProperty.cs</Link>
+    <Compile Include="..\ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyTransform.cs">
+      <Link>ChrisLaRosa.SaintsRow.ZoneFile\SRZonePropertyTransform.cs</Link>
     </Compile>
     <Compile Include="..\ThirdParty\Options.cs">
       <Link>ThirdParty\Options.cs</Link>

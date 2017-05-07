@@ -8,7 +8,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Xml;
@@ -16,25 +15,25 @@ using System.Xml;
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
     /// <summary>
-    /// Object property value which represents a transform.
+    /// Object property value which represents a string.
     /// </summary>
-    class SRZoneTransformProperty : SRZoneProperty
+    public class SRZonePropertyString : SRZoneProperty
     {
         // FIELD VALUES
 
-        protected SRPosition position;
+        private String value;
 
         // PROPERTIES
 
-        public override UInt16 Type { get { return TransformType; } }
-        public SRPosition Position { get { return position; } }      // Callers can set individual member variables
+        public override UInt16 Type { get { return StringType; } }
+        public string Value { get { return value; } set { this.value = value; } }
 
         // CONSTRUCTORS
 
-        public SRZoneTransformProperty(Int32 nameCrc, SRPosition position = null)
+        public SRZonePropertyString(Int32 nameCrc, string value = null)
         {
             this.nameCrc = nameCrc;
-            this.position = position != null ? position : new SRPosition();
+            this.value = value;
         }
 
         // PROTECTED READERS / WRITERS
@@ -42,35 +41,38 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadData(SRBinaryReader binaryReader, int size)
         {
-            position = new SRPosition(binaryReader);
-            SRTrace.WriteLine("        Value:     Position (x,y,z):  " + position.ToString());
-            if (size != 12)
-                throw new SRZoneFileException("Transform length is wrong.");
+            value = binaryReader.ReadString();
+            SRTrace.WriteLine("        Value:     \"" + value + "\"");
+            if (value.Length + 1 != size)
+                throw new SRZoneFileException("String length is wrong.");
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteData(SRBinaryWriter binaryWriter)
         {
-            position.Write(binaryWriter);
+            binaryWriter.Write(value);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
-        protected override void ReadXmlData(XmlNode parentNode)
+        protected override void ReadXmlData(XmlNode thisNode)
         {
-            position = new SRPosition(parentNode);
+            SRXmlNodeReader reader = new SRXmlNodeReader(thisNode);
+            value = reader.ReadString("string");
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
-        protected override void WriteXmlData(XmlNode parentNode)
+        protected override void WriteXmlData(XmlNode thisNode)
         {
-            position.WriteXml(parentNode);
+            SRXmlNodeWriter writer = new SRXmlNodeWriter(thisNode);
+            writer.Write("string", value);
         }
 
         // SYSTEM OBJECT OVERRIDES
 
+        // IMPORTANT:  This must always return the string value only because other functions rely on that.
         public override string ToString()
         {
-            return position.ToString();
+            return value;
         }
     }
 }

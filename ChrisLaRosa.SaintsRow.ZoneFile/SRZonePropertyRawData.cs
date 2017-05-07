@@ -15,25 +15,27 @@ using System.Xml;
 namespace ChrisLaRosa.SaintsRow.ZoneFile
 {
     /// <summary>
-    /// Object property value which represents a string.
+    /// Object property value which represents generic data.
     /// </summary>
-    public class SRZoneStringProperty : SRZoneProperty
+    public class SRZonePropertyRawData : SRZoneProperty
     {
         // FIELD VALUES
 
-        private String value;
+        private UInt16 type;
+        private SRRawDataBlock data;
 
         // PROPERTIES
 
-        public override UInt16 Type { get { return StringType; } }
-        public string Value { get { return value; } set { this.value = value; } }
+        public override UInt16 Type { get { return type; } }
+        public SRRawDataBlock Data { get { return data; } set { data = value; } }
 
         // CONSTRUCTORS
 
-        public SRZoneStringProperty(Int32 nameCrc, string value = null)
+        public SRZonePropertyRawData(UInt16 type, Int32 nameCrc, SRRawDataBlock data = null)
         {
+            this.type = type;
             this.nameCrc = nameCrc;
-            this.value = value;
+            this.data = data;
         }
 
         // PROTECTED READERS / WRITERS
@@ -41,38 +43,33 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadData(SRBinaryReader binaryReader, int size)
         {
-            value = binaryReader.ReadString();
-            SRTrace.WriteLine("        Value:     \"" + value + "\"");
-            if (value.Length + 1 != size)
-                throw new SRZoneFileException("String length is wrong.");
+            data = new SRRawDataBlock(binaryReader, size);
+            SRTrace.WriteLine("        Value:     " + data.ToString());
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteData(SRBinaryWriter binaryWriter)
         {
-            binaryWriter.Write(value);
+            data.Write(binaryWriter);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void ReadXmlData(XmlNode thisNode)
         {
-            SRXmlNodeReader reader = new SRXmlNodeReader(thisNode);
-            value = reader.ReadString("string");
+            data = new SRRawDataBlock(thisNode);
         }
 
         // See description of this method in the abstract base class SRZoneProperty.
         protected override void WriteXmlData(XmlNode thisNode)
         {
-            SRXmlNodeWriter writer = new SRXmlNodeWriter(thisNode);
-            writer.Write("string", value);
+            data.WriteXml(thisNode);
         }
 
         // SYSTEM OBJECT OVERRIDES
 
-        // IMPORTANT:  This must always return the string value only because other functions rely on that.
         public override string ToString()
         {
-            return value;
+            return data.ToString();
         }
     }
 }

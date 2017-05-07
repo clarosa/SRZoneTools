@@ -121,8 +121,10 @@ table.directions th:first-child, table.directions td:first-child { text-align: l
  are testing:
 </p>
 <pre>
-    SRZoneTool filename.czn_pc -o filename.xml
+    SRZoneTool filename.czh_pc filename.czn_pc -o filename.xml
+    SRZoneTool filename.xml -o filename2.czh_pc
     SRZoneTool filename.xml -o filename2.czn_pc
+    fc /b filename.czh_pc filename2.czh_pc
     fc /b filename.czn_pc filename2.czn_pc
 </pre>
 <p>
@@ -135,8 +137,10 @@ table.directions th:first-child, table.directions td:first-child { text-align: l
  For example:
 </p>
 <pre>
-    SRZoneTool sr3_city~fm06`.czn_pc -o sr3_city~fm06`.xml
+    SRZoneTool sr3_city~fm06`.czh_pc sr3_city~fm06`.czn_pc -o sr3_city~fm06`.xml
+    SRZoneTool sr3_city~fm06`.xml -o sr3_city~fm06`2.czh_pc
     SRZoneTool sr3_city~fm06`.xml -o sr3_city~fm06`2.czn_pc
+    fc /b sr3_city~fm06`.czh_pc sr3_city~fm06`2.czh_pc
     fc /b sr3_city~fm06`.czn_pc sr3_city~fm06`2.czn_pc
 </pre>
 

@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2015 Christopher LaRosa
+// Copyright (C) 2015-2017 Christopher LaRosa
 //
 // Based on Saints Row: The Third zone file format info and discussion here:
 // https://www.saintsrowmods.com/forum/threads/sr3-zone-file-format.2855/
@@ -50,7 +50,7 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
         static int Main(string[] args)
         {
             string programName = System.Diagnostics.Process.GetCurrentProcess().ProcessName;
-            string svnRevision = "$Revision: 1265 $";
+            string svnRevision = "$Revision: 1296 $";
             Regex regex = new Regex(@"\D");
             string revision = regex.Replace(svnRevision, "");
             Assembly assem = Assembly.GetEntryAssembly();
@@ -70,9 +70,10 @@ namespace ChrisLaRosa.SaintsRow.SRZoneTool
                 { "v|verbose", "display detailed information when reading files", v => { if (v != null) SRTrace.Enable = true; } },
                 { "h|help",  "show this message and exit", v => showHelp = v != null },
                 { "no-keep-padding", "don't preserve property padding on zone file read", v => { if (v != null) SRZoneProperty.OptionPreservePadding = false; } },
+                { "no-parse-fast-object", "don't parse fast objects on zone file read", v => { if (v != null) SRZoneSection.OptionParseFastObjects = false; } },
                 { "no-parse-object", "don't parse objects on zone file read", v => { if (v != null) SRZoneSection.OptionParseObjects = false; } },
                 { "no-parse-property", "don't parse property values on zone file read", v => { if (v != null) SRZoneProperty.OptionParseValues = false; } },
-                { "rebuild-handle-list", "rebuild object handle list before writing", v => { if (v != null) SRZoneObjectSectionCpuData.OptionRebuildHandleList = true; } },
+                { "rebuild-handle-list", "rebuild object handle list before writing", v => { if (v != null) SRZoneSectionDataObjects.OptionRebuildHandleList = true; } },
             };
 
             try

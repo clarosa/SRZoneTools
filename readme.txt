@@ -55,6 +55,10 @@ PACKAGE VERSION HISTORY
   2.5    [2017-05-01]  Added the complete (?) list of object type names to
                        SRReadZone and ZRZoneTool, contributed by Minimaul at
                        saintsrowmods.com.
+  3.0    [2017-05-07]  Updated SRZoneTool to parse and convert zone file
+                       section type 0x2233 (crunched reference geometry) up to
+                       and including object coordinates.  Can still read XML
+                       files created by version 2.x.
 
 XML CHANGES MADE IN VERSION 2.0
 

@@ -19,7 +19,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
     /// This data block appears within the CPU Data of a Section block of type 0x2234.
     /// It contains a header followed by a list of Object data items.
     /// </summary>
-    public class SRZoneObjectSectionCpuData : SRDataBlockSingleBase
+    public class SRZoneSectionDataObjects : SRDataBlockSingleBase
     {
 
         public const string XmlTagName = "object_data";     // Used in XML documents
@@ -48,16 +48,16 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         // CONSTRUCTORS
 
-        public SRZoneObjectSectionCpuData()
+        public SRZoneSectionDataObjects()
         {
         }
 
-        public SRZoneObjectSectionCpuData(SRBinaryReader binaryReader, int size)
+        public SRZoneSectionDataObjects(SRBinaryReader binaryReader, int size)
         {
             Read(binaryReader, size);
         }
 
-        public SRZoneObjectSectionCpuData(XmlNode parentNode)
+        public SRZoneSectionDataObjects(XmlNode parentNode)
         {
             ReadXml(parentNode);
         }

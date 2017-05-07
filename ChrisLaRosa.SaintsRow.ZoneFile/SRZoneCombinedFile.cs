@@ -130,7 +130,7 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 SRBinaryReader binaryReader = new SRBinaryReader(stream);
                 int index = 0;
                 while (binaryReader.BaseStream.Position <= binaryReader.BaseStream.Length - 4)
-                    sectionList.Add(new SRZoneSection(binaryReader, index++));
+                    sectionList.Add(new SRZoneSection(vFileHeader, binaryReader, index++));
             }
             catch (Exception e)
             {
@@ -189,19 +189,19 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
                 // with whitespace are not trimmed (e.g. "<tag> </tag>").
                 xmlDocument.PreserveWhitespace = true;
                 xmlDocument.Load(xmlFile);
+                XmlNode zoneHeaderNode = xmlDocument.SelectSingleNode("/root/" + XmlZoneHeaderTagName);
+                if (zoneHeaderNode != null)
+                {
+                    vFileHeader = new SRVFileHeader(zoneHeaderNode);
+                    worldZoneHeader = new SRWorldZoneHeader(zoneHeaderNode, vFileHeader);
+                }
                 if (xmlDocument.SelectSingleNode("/root/" + XmlZoneDataTagName) != null)
                 {
                     sectionList = new List<SRZoneSection>();
                     XmlNodeList selectNodeList = xmlDocument.SelectNodes("/root/" + XmlZoneDataTagName + "/" + SRZoneSection.XmlTagName);
                     int index = 0;
                     foreach (XmlNode selectNode in selectNodeList)
-                        sectionList.Add(new SRZoneSection(selectNode, index++));
-                }
-                XmlNode zoneHeaderNode = xmlDocument.SelectSingleNode("/root/" + XmlZoneHeaderTagName);
-                if (zoneHeaderNode != null)
-                {
-                    vFileHeader = new SRVFileHeader(zoneHeaderNode);
-                    worldZoneHeader = new SRWorldZoneHeader(zoneHeaderNode, vFileHeader);
+                        sectionList.Add(new SRZoneSection(vFileHeader, selectNode, index++));
                 }
             }
             catch (Exception e)

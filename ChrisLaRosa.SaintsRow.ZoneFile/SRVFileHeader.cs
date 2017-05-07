@@ -92,9 +92,28 @@ namespace ChrisLaRosa.SaintsRow.ZoneFile
 
         public long GetReferenceWriteOffsetByName(string name)
         {
+            if (referenceWriteOffsetsByName == null)
+                BuildReferenceWriteOffsetsByName();
             if (!referenceWriteOffsetsByName.ContainsKey(name))
                 throw new SRZoneFileException("Reference \"" + name + "\" does not exist in V-File Header.");
             return referenceWriteOffsetsByName[name];
+        }
+
+        private void BuildReferenceWriteOffsetsByName()
+        {
+            referenceWriteOffsetsByName = new Dictionary<string, long>();
+
+            UInt32 offset = 0;
+            int count = referenceData.Count;
+            for (int i = 0; i < count; i++)
+            {
+                string id = (i + 1).ToString();
+                string name = referenceData[i];
+                referenceWriteOffsetsByName.Add(id, offset);
+                if (!referenceWriteOffsetsByName.ContainsKey(name))
+                    referenceWriteOffsetsByName.Add(name, offset);
+                offset += (UInt32)name.Length + 1;
+            }
         }
 
         // READERS / WRITERS
